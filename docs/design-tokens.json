@@ -1,0 +1,14 @@
+{
+  "_note": "Irancell-inspired concept (yellow + ink). Brand assets are NOT in the repo; swap values here only.",
+  "color": {
+    "brand": "#FFCC00", "brandInk": "#1A1A1A", "brandDeep": "#E6B800",
+    "bg": "#F6F6F4", "surface": "#FFFFFF", "line": "#E4E2DA",
+    "text": "#1A1A1A", "textMuted": "#5F5E5A",
+    "ok": "#1B7F4B", "warn": "#B26A00", "danger": "#C0392B", "info": "#1F5FA8",
+    "dark": { "bg": "#121212", "surface": "#1C1C1A", "line": "#33322E", "text": "#F2F1EC", "textMuted": "#A7A59C" }
+  },
+  "font": { "family": "Vazirmatn, system-ui, sans-serif", "base": 15, "scale": [12,13,15,17,20,24,30] },
+  "space": [4,8,12,16,24,32,48], "radius": { "sm": 6, "md": 10, "lg": 16 },
+  "layout": { "dir": "rtl", "sidebarWidth": 248, "minTouch": 44, "maxContent": 1360 },
+  "a11y": { "minContrastText": 4.5, "focusRing": "2px solid #1F5FA8" }
+}
