@@ -1,0 +1,10 @@
+import { launch, login, BASE, OUT } from "./lib.mjs";
+const b = await launch();
+const ctx = await b.newContext({ viewport:{width:1280,height:900}, locale:"fa-IR" });
+const p = await ctx.newPage(); p.setDefaultTimeout(3000);
+await login(p,"admin");
+await p.goto(`${BASE}/`); await p.waitForTimeout(1000);
+await p.screenshot({path:`${OUT}/dashboard-full.png`,fullPage:true});
+console.log(await p.$$eval("main a.btn, main button.btn",a=>a.map(x=>x.innerText.trim()+" -> "+(x.getAttribute("href")||"btn")).join("\n")));
+console.log(await p.$$eval("main section",s=>s.map(x=>x.querySelector("h2")?.innerText+": rows "+x.querySelectorAll("li").length+" | links "+[...x.querySelectorAll("a")].map(a=>a.innerText).join(",")).join("\n")));
+await b.close();

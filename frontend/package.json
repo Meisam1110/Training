@@ -1,0 +1,41 @@
+{
+  "name": "tms-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "tokens": "node scripts/gen-tokens.mjs",
+    "predev": "npm run tokens",
+    "dev": "vite",
+    "dev:mock": "VITE_MOCK=1 vite",
+    "prebuild": "npm run tokens",
+    "build": "tsc -b && vite build",
+    "build:mock": "VITE_MOCK=1 npm run build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run tokens",
+    "test": "vitest run",
+    "screenshots": "node scripts/screenshots.mjs"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.59.0",
+    "@tanstack/react-table": "^8.20.5",
+    "@tanstack/react-virtual": "^3.10.8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vazirmatn": "^33.0.3"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.2",
+    "jsdom": "^25.0.1",
+    "playwright-core": "^1.56.1",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.9",
+    "vitest": "^2.1.4"
+  }
+}

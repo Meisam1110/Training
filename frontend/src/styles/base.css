@@ -1,0 +1,39 @@
+@import "vazirmatn/Vazirmatn-font-face.css";
+@import "./tokens.generated.css";
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: var(--font-family); font-size: var(--font-base); line-height: 1.75;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4 { margin: 0; line-height: 1.4; font-weight: 700; letter-spacing: 0; }
+h1 { font-size: var(--fs-6); } h2 { font-size: var(--fs-5); } h3 { font-size: var(--fs-4); } h4 { font-size: var(--fs-3); }
+p { margin: 0; }
+a { color: var(--info); text-underline-offset: 3px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+img, svg { display: block; max-inline-size: 100%; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+table { border-collapse: collapse; }
+mark { background: var(--warn-bg); color: var(--warn); padding-inline: 4px; border-radius: 4px; }
+code, .ltr { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; direction: ltr; unicode-bidi: isolate; }
+.ltr { display: inline-block; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--text-muted); }
+.sr-only { position: absolute; inline-size: 1px; block-size: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; padding: 0; }
+
+:focus { outline: none; }
+:focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+/* Focus ring on yellow controls needs a light inner edge to stay visible against the fill. */
+.btn--primary:focus-visible { box-shadow: 0 0 0 2px var(--surface); }
+
+.skip-link {
+  position: fixed; inset-block-start: -100px; inset-inline-start: var(--space-4); z-index: 100;
+  background: var(--brand); color: var(--brand-ink); padding: var(--space-2) var(--space-4); border-radius: var(--radius-md); font-weight: 700;
+}
+.skip-link:focus { inset-block-start: var(--space-3); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+}

@@ -1,0 +1,14 @@
+import { launch, login, BASE, OUT } from "./lib.mjs";
+const b = await launch();
+const ctx = await b.newContext({ viewport:{width:1280,height:900}, locale:"fa-IR" });
+const p = await ctx.newPage(); p.setDefaultTimeout(3000);
+await login(p,"admin");
+await p.goto(`${BASE}/`); await p.waitForTimeout(1000);
+const row = p.locator('li:has-text("امنیت سایبری مقدماتی")').first();
+console.log("dashboard row text:", (await row.innerText()).replace(/\n/g," | "));
+await row.locator('a:has-text("ساخت نامهٔ تسویه")').click(); await p.waitForTimeout(1500);
+console.log("url", p.url());
+console.log("selected run:", await p.locator('select >> nth=1').evaluate(s=>s.options[s.selectedIndex].text));
+console.log("preview:", (await p.innerText('[data-testid=letter-preview]')).replace(/\n+/g," | "));
+await p.screenshot({path:`${OUT}/dash-settle-wrongrun.png`});
+await b.close();

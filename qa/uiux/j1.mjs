@@ -1,0 +1,28 @@
+import { launch, login, BASE, OUT } from "./lib.mjs";
+const b = await launch();
+const ctx = await b.newContext({ viewport:{width:1280,height:800}, locale:"fa-IR" });
+const p = await ctx.newPage(); let clicks=0, keys=0;
+const errs=[]; p.on("pageerror",e=>errs.push(e.message));
+const click=async(sel,opt)=>{clicks++; await p.click(sel,opt);};
+await login(p,"admin");
+const t0=Date.now();
+await p.goto(`${BASE}/runs`); await p.waitForTimeout(800);
+await click("text=دورهٔ جدید");
+await p.waitForSelector('[role=dialog]');
+await p.selectOption('[role=dialog] select', {index:2}); clicks++;
+const inputs = await p.$$('[role=dialog] input.input');
+await inputs[0].fill("Acme"); 
+await inputs[1].fill("1405/8/20"); await inputs[2].fill("1405/8/22");
+await p.screenshot({path:`${OUT}/j1-newrun-filled.png`});
+await click('[role=dialog] button:has-text("ساخت دوره")');
+await p.waitForURL(/runs\/\d+$/); await p.waitForTimeout(700);
+console.log("created run at", p.url(), "clicks",clicks);
+await p.screenshot({path:`${OUT}/j1-newrun-detail.png`});
+console.log(await p.innerText("section.card"));
+// go candidates
+const id = p.url().match(/runs\/(\d+)/)[1];
+await p.goto(`${BASE}/runs/${id}/candidates`); await p.waitForTimeout(900);
+console.log("cand rows", await p.$$eval("tbody tr",r=>r.length));
+await p.screenshot({path:`${OUT}/j1-cand.png`});
+console.log(errs);
+await b.close();

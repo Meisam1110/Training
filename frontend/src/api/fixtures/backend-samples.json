@@ -1,0 +1,435 @@
+{
+ "dashboard": {
+  "not_started_courses": [
+   {
+    "id": 4,
+    "course_id": 4,
+    "course_name": "Data Analysis",
+    "course_name_fa": "تحلیل داده",
+    "type": "online",
+    "institute": "Sample Training Co",
+    "institute_id": 2,
+    "duration_h": 32.0,
+    "start_date": "2026-10-12",
+    "end_date": "2026-10-14",
+    "days": "Sat-Sun",
+    "time": "09:00-16:00",
+    "sessions": 3,
+    "send_date": "2026-09-22",
+    "deadline": "2026-10-05",
+    "amount": 240000000.0,
+    "section_b": "MTC-100003",
+    "status": "announced",
+    "link": "",
+    "payment_process": "",
+    "pr_process_start_date": null,
+    "invoice_receive_date": null,
+    "run_key": "data analysis|sample training co|2026-10-12",
+    "days_to_course": 12,
+    "enrollment_count": 12,
+    "motivation_yes": 4
+   }
+  ],
+  "payment_not_started": [
+   {
+    "id": 1,
+    "course_id": 1,
+    "course_name": "Effective Communication",
+    "course_name_fa": "ارتباط مؤثر",
+    "type": "online",
+    "institute": "Demo Academy",
+    "institute_id": 1,
+    "duration_h": 16.0,
+    "start_date": "2026-07-22",
+    "end_date": "2026-07-24",
+    "days": "Sat-Sun",
+    "time": "09:00-16:00",
+    "sessions": 3,
+    "send_date": "2026-07-02",
+    "deadline": "2026-07-15",
+    "amount": 120000000.0,
+    "section_b": "MTC-100000",
+    "status": "completed",
+    "link": "",
+    "payment_process": "",
+    "pr_process_start_date": null,
+    "invoice_receive_date": null,
+    "run_key": "effective communication|demo academy|2026-07-22",
+    "days_to_course": -70,
+    "enrollment_count": 14,
+    "motivation_yes": 7,
+    "days_since_start": 70
+   }
+  ],
+  "over3_motivations": [],
+  "level3_due": [
+   {
+    "enrollment_id": 1,
+    "ticket": "LMS-700000",
+    "emp_no": "D00001",
+    "employee_name": "Reza Nova1",
+    "course_name": "Effective Communication - Batch A",
+    "end_date": "2026-07-24",
+    "days_since_end": 68
+   }
+  ],
+  "counts": {
+   "employees": 60,
+   "courses": 6,
+   "runs": 6,
+   "enrollments": 125,
+   "unassigned_enrollments": 45,
+   "letters": 0,
+   "messages": 0,
+   "not_started_courses": 3,
+   "payment_not_started": 3,
+   "over3_motivations": 0,
+   "level3_due": 14
+  },
+  "last_sync": {
+   "excel": null,
+   "ifs": null
+  }
+ },
+ "runs": {
+  "items": [
+   {
+    "id": 6,
+    "course_id": 6,
+    "course_name": "Negotiation Skills",
+    "course_name_fa": "مهارت‌های مذاکره",
+    "type": "in_person",
+    "institute": "Sample Training Co",
+    "institute_id": 2,
+    "duration_h": 16.0,
+    "start_date": "2026-11-14",
+    "end_date": "2026-11-16",
+    "days": "Sat-Sun",
+    "time": "09:00-16:00",
+    "sessions": 3,
+    "send_date": "2026-10-25",
+    "deadline": "2026-11-07",
+    "amount": 240000000.0,
+    "section_b": "MTC-100005",
+    "status": "announced",
+    "link": "",
+    "payment_process": "",
+    "pr_process_start_date": null,
+    "invoice_receive_date": null,
+    "run_key": "negotiation skills|sample training co|2026-11-14",
+    "days_to_course": 45
+   }
+  ],
+  "total": 6,
+  "page": 1,
+  "page_size": 2
+ },
+ "run_detail": {
+  "id": 6,
+  "course_id": 6,
+  "course_name": "Negotiation Skills",
+  "course_name_fa": "مهارت‌های مذاکره",
+  "type": "in_person",
+  "institute": "Sample Training Co",
+  "institute_id": 2,
+  "duration_h": 16.0,
+  "start_date": "2026-11-14",
+  "end_date": "2026-11-16",
+  "days": "Sat-Sun",
+  "time": "09:00-16:00",
+  "sessions": 3,
+  "send_date": "2026-10-25",
+  "deadline": "2026-11-07",
+  "amount": 240000000.0,
+  "section_b": "MTC-100005",
+  "status": "announced",
+  "link": "",
+  "payment_process": "",
+  "pr_process_start_date": null,
+  "invoice_receive_date": null,
+  "run_key": "negotiation skills|sample training co|2026-11-14",
+  "days_to_course": 45,
+  "enrollment_count": 13,
+  "motivation_yes": 6
+ },
+ "enrollments": {
+  "items": [
+   {
+    "id": 1,
+    "ticket": "LMS-700000",
+    "emp_no": "D00001",
+    "employee_name": "Reza Nova1",
+    "employee_name_fa": "رضا نووا1",
+    "division": "Customer Care",
+    "run_id": 1,
+    "course_name": "Effective Communication - Batch A",
+    "category": "Soft Skill",
+    "current_status": "Evaluation Level 3",
+    "status": "requested",
+    "motivation": "Yes",
+    "registration": "",
+    "calendar": "",
+    "attendance": "Attended",
+    "payment": "",
+    "comment": "",
+    "section_b": "MTC-100000",
+    "start_date": "2026-07-22",
+    "end_date": "2026-07-24",
+    "level3_status": "",
+    "level3_sent": false,
+    "link": "https://icare.mtnirancell.ir/browse/LMS-700000"
+   }
+  ],
+  "total": 14,
+  "page": 1,
+  "page_size": 1
+ },
+ "employees": {
+  "items": [
+   {
+    "emp_no": "D00001",
+    "first_name_en": "Reza",
+    "last_name_en": "Nova1",
+    "first_name_fa": "رضا",
+    "last_name_fa": "نووا1",
+    "gender": "male",
+    "email": "reza.nova1@example.test",
+    "division": "Customer Care",
+    "cost_center": "CC197",
+    "org_code": "ORG67",
+    "position_title": "Specialist",
+    "supervisor_emp_no": "",
+    "status": "Active",
+    "source": "demo",
+    "mobile": "********56",
+    "national_code": "********48",
+    "revealed": false
+   }
+  ],
+  "total": 60,
+  "page": 1,
+  "page_size": 1
+ },
+ "employee_revealed": {
+  "emp_no": "D00001",
+  "first_name_en": "Reza",
+  "last_name_en": "Nova1",
+  "first_name_fa": "رضا",
+  "last_name_fa": "نووا1",
+  "gender": "male",
+  "email": "reza.nova1@example.test",
+  "division": "Customer Care",
+  "cost_center": "CC197",
+  "org_code": "ORG67",
+  "position_title": "Specialist",
+  "supervisor_emp_no": "",
+  "status": "Active",
+  "source": "demo",
+  "mobile": "09901058756",
+  "national_code": "9994279348",
+  "revealed": true,
+  "date_of_birth": "1980-04-15"
+ },
+ "connectors": {
+  "items": [
+   {
+    "kind": "excel",
+    "configured": false,
+    "enabled": false,
+    "config": {},
+    "secrets_set": [],
+    "last_test_ok": null,
+    "last_test_at": null,
+    "updated_at": null
+   },
+   {
+    "kind": "ifs",
+    "configured": false,
+    "enabled": false,
+    "config": {},
+    "secrets_set": [],
+    "last_test_ok": null,
+    "last_test_at": null,
+    "updated_at": null
+   },
+   {
+    "kind": "smtp",
+    "configured": false,
+    "enabled": false,
+    "config": {},
+    "secrets_set": [],
+    "last_test_ok": null,
+    "last_test_at": null,
+    "updated_at": null
+   },
+   {
+    "kind": "graph",
+    "configured": false,
+    "enabled": false,
+    "config": {},
+    "secrets_set": [],
+    "last_test_ok": null,
+    "last_test_at": null,
+    "updated_at": null
+   }
+  ]
+ },
+ "due": {
+  "total": 17,
+  "counts": {
+   "level3_due": 14,
+   "payment_not_started": 3
+  },
+  "items": [
+   {
+    "kind": "level3_due",
+    "enrollment_id": 1,
+    "run_id": 1,
+    "detail": "LMS-700000: course ended 68 days ago (>= 60), Level 3 evaluation due"
+   },
+   {
+    "kind": "level3_due",
+    "enrollment_id": 15,
+    "run_id": 1,
+    "detail": "LMS-700060: course ended 68 days ago (>= 60), Level 3 evaluation due"
+   }
+  ]
+ },
+ "settings": {
+  "enabled": true,
+  "level3_after_days": 60,
+  "reminder_days": 2,
+  "over3_threshold": 3,
+  "letter_number_prefix": "",
+  "letter_number_start": 0,
+  "company_economic_code": "",
+  "company_national_id": "",
+  "company_postal_code": "",
+  "company_address": "",
+  "settlement_addressee": "",
+  "letter_signer_name": "",
+  "letter_signer_title": "",
+  "letter_signer_email": "",
+  "letter_signer_phone": "",
+  "interval_s": 86400,
+  "loop_enabled": false,
+  "last_run": null
+ },
+ "audit": {
+  "items": [
+   {
+    "id": 3,
+    "ts": "2026-09-30T11:51:45.464874",
+    "actor": "demo_admin",
+    "actor_id": 1,
+    "action": "employee.reveal",
+    "entity": "employee",
+    "entity_id": "D00001",
+    "detail": {
+     "fields": [
+      "national_code",
+      "mobile",
+      "date_of_birth"
+     ]
+    },
+    "ip": "127.0.0.1"
+   }
+  ],
+  "total": 3,
+  "page": 1,
+  "page_size": 1
+ },
+ "users": {
+  "items": [
+   {
+    "id": 1,
+    "username": "demo_admin",
+    "display_name": "Demo admin",
+    "role": "admin",
+    "is_active": true,
+    "created_at": "2026-09-30T11:45:56.701502",
+    "last_login_at": "2026-09-30T11:46:13.753750"
+   }
+  ],
+  "total": 3,
+  "page": 1,
+  "page_size": 50
+ },
+ "courses": {
+  "items": [
+   {
+    "id": 4,
+    "name": "Data Analysis",
+    "name_fa": "تحلیل داده",
+    "category": "Technical",
+    "default_duration_h": 32.0,
+    "active": true
+   }
+  ],
+  "total": 6,
+  "page": 1,
+  "page_size": 1
+ },
+ "candidates": {
+  "run_id": 6,
+  "course_name": "Negotiation Skills",
+  "candidates": [
+   {
+    "id": 13,
+    "ticket": "LMS-700050",
+    "emp_no": "D00006",
+    "employee_name": "Hamid Sample6",
+    "employee_name_fa": "حمید نمونه6",
+    "division": "Finance",
+    "run_id": null,
+    "course_name": "Negotiation Skills - Batch A",
+    "category": "Soft Skill",
+    "current_status": "Approved",
+    "status": "requested",
+    "motivation": "",
+    "registration": "",
+    "calendar": "",
+    "attendance": "-",
+    "payment": "",
+    "comment": "",
+    "section_b": "",
+    "start_date": null,
+    "end_date": null,
+    "level3_status": "",
+    "level3_sent": false,
+    "link": "https://icare.mtnirancell.ir/browse/LMS-700050",
+    "flags": [],
+    "flagged": false
+   },
+   {
+    "id": 25,
+    "ticket": "LMS-700101",
+    "emp_no": "D00011",
+    "employee_name": "Farid Demo11",
+    "employee_name_fa": "فرید دمو11",
+    "division": "Technology",
+    "run_id": null,
+    "course_name": "Negotiation Skills - Batch B",
+    "category": "Soft Skill",
+    "current_status": "Approved",
+    "status": "requested",
+    "motivation": "",
+    "registration": "",
+    "calendar": "",
+    "attendance": "-",
+    "payment": "",
+    "comment": "",
+    "section_b": "",
+    "start_date": null,
+    "end_date": null,
+    "level3_status": "",
+    "level3_sent": false,
+    "link": "https://icare.mtnirancell.ir/browse/LMS-700101",
+    "flags": [],
+    "flagged": false
+   }
+  ],
+  "excluded": [],
+  "total": 9
+ }
+}
