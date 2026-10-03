@@ -1,0 +1,40 @@
+# TLS-terminating reverse proxy for TMS. Adapt server_name and certificate paths; see docs/DEPLOYMENT.md.
+# The app trusts X-Forwarded-For only from TMS_TRUSTED_PROXIES (default: loopback + docker bridge 172.16.0.0/12).
+upstream tms_app { server 127.0.0.1:8000; keepalive 16; }
+
+server {
+    listen 80;
+    server_name tms.example.internal;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name tms.example.internal;
+
+    ssl_certificate     /etc/ssl/tms/fullchain.pem;
+    ssl_certificate_key /etc/ssl/tms/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:TMS:10m;
+
+    # The app sets CSP/nosniff/frame headers itself; HSTS comes from TMS_HSTS=true (do not double it here).
+    client_max_body_size 26m;          # >= TMS_MAX_UPLOAD_BYTES; the app enforces the real limit
+    server_tokens off;
+
+    location / {
+        proxy_pass http://tms_app;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;      # overwrite, never append client-supplied values (the app also reads the chain from the right)
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 300s;     # imports/syncs run in the background and return quickly; this covers slow uploads
+    }
+
+    # Liveness for load balancers / monitoring without exposing the API
+    location = /health { proxy_pass http://tms_app; access_log off; }
+}

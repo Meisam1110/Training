@@ -1,0 +1,64 @@
+{
+ "target": "liveprod",
+ "role": "admin",
+ "width": "1440",
+ "log": [
+  {
+   "step": "cold nav اتصال‌ها",
+   "shifts": 1,
+   "cls": 0.2968,
+   "top": [
+    "0.2968 card card--flush y416>0 h424>0"
+   ]
+  },
+  {
+   "step": "runs: type search",
+   "shifts": 1,
+   "cls": 0.0121,
+   "top": [
+    "0.0121 TR y372>296 h54>64 | TR y0>360 h0>65"
+   ]
+  },
+  {
+   "step": "runs: clear search",
+   "shifts": 1,
+   "cls": 0.0192,
+   "top": [
+    "0.0192 TR y296>372 h64>65 | TR y360>514 h65>65"
+   ]
+  },
+  {
+   "step": "run: click step 3",
+   "shifts": 1,
+   "cls": 0.0216,
+   "top": [
+    "0.0216 #text y278>269 h29>29 | muted y331>312 h26>27 | stack y369>351 h129>86"
+   ]
+  },
+  {
+   "step": "enrollments: page/filters",
+   "shifts": 1,
+   "cls": 0.4185,
+   "top": [
+    "0.4185 TR y505>400 h105>105 | TR y715>505 h105>105 | TR y0>610 h0>77"
+   ]
+  },
+  {
+   "step": "enrollments: next page",
+   "shifts": 2,
+   "cls": 0.0554,
+   "top": [
+    "0.0554 pager y0>734 h0>69 | pager muted y0>803 h0>48"
+   ]
+  },
+  {
+   "step": "letters: change kind",
+   "shifts": 2,
+   "cls": 0.044,
+   "top": [
+    "0.0434 row y439>624 h44>44 | card card--flush y532>717 h320>183"
+   ]
+  }
+ ],
+ "total": 27
+}

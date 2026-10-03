@@ -1,0 +1,41 @@
+# systemd unit for a non-container install (venv at /opt/tms/venv, code at /opt/tms/app).
+# Install: sudo cp deploy/tms.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable --now tms
+# Secrets live in /etc/tms/tms.env (chmod 600, owner root) -- see .env.example.
+[Unit]
+Description=Training Management System (TMS)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=tms
+Group=tms
+WorkingDirectory=/opt/tms/app/backend
+EnvironmentFile=/etc/tms/tms.env
+Environment=TMS_ENV=production TMS_STORAGE_DIR=/var/lib/tms TMS_STATIC_ROOT=/opt/tms/app/frontend/dist TMS_TEMPLATES_DIR=/opt/tms/app/templates
+# Migrations are explicit (never on start):  sudo -u tms /opt/tms/venv/bin/alembic upgrade head
+ExecStart=/opt/tms/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2 --timeout-graceful-shutdown 20 --no-proxy-headers --no-server-header
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+# Hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LockPersonality=yes
+ReadWritePaths=/var/lib/tms
+StateDirectory=tms
+LimitNOFILE=4096
+MemoryMax=1G
+
+[Install]
+WantedBy=multi-user.target

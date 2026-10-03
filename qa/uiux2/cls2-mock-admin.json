@@ -1,0 +1,199 @@
+{
+ "target": "mock",
+ "role": "admin",
+ "errs": [],
+ "out": [
+  {
+   "route": "/",
+   "shiftCount": 1,
+   "total": 0.2518,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 680,
+     "v": 0.2518,
+     "src": [
+      "card 130>0@y531>0",
+      "muted 26>27@y191>197",
+      "card dash-card 185>250@y322>650"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/runs",
+   "shiftCount": 2,
+   "total": 0.0103,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 102,
+     "v": 0.0103,
+     "src": [
+      "HTML 8>900@y0>0"
+     ]
+    },
+    {
+     "t": 821,
+     "v": 0,
+     "src": [
+      "th-sort 44>44@y241>241"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/runs/1",
+   "shiftCount": 1,
+   "total": 0.0012,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 333,
+     "v": 0.0012,
+     "src": [
+      "wordmark__mark 36>36@y31>24",
+      "nav 605>619@y98>84",
+      "#text 23>23@y736>733"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/runs/1/candidates",
+   "shiftCount": 1,
+   "total": 0.008,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 556,
+     "v": 0.008,
+     "src": [
+      "DIV 44>70@y36>28",
+      "row 44>44@y32>54",
+      "card card--flush 556>556@y100>122"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/enrollments",
+   "shiftCount": 1,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 761,
+     "v": 0,
+     "src": [
+      "th-sort 44>44@y241>241",
+      "th-sort 44>44@y241>241"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/letters",
+   "shiftCount": 0,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/employees",
+   "shiftCount": 2,
+   "total": 0.0103,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 77,
+     "v": 0.0103,
+     "src": [
+      "HTML 8>900@y0>0"
+     ]
+    },
+    {
+     "t": 547,
+     "v": 0,
+     "src": [
+      "th-sort 44>44@y241>241"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/connectors",
+   "shiftCount": 1,
+   "total": 0.2824,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 733,
+     "v": 0.2824,
+     "src": [
+      "card card--flush 370>0@y416>0"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/automation",
+   "shiftCount": 1,
+   "total": 0.0103,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 77,
+     "v": 0.0103,
+     "src": [
+      "HTML 8>900@y0>0"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/import-export",
+   "shiftCount": 1,
+   "total": 0.0103,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 92,
+     "v": 0.0103,
+     "src": [
+      "HTML 8>900@y0>0"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/admin",
+   "shiftCount": 0,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  }
+ ]
+}

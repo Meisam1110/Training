@@ -1,0 +1,15 @@
+import { launch, login, BASE, OUT } from "./lib.mjs";
+const b = await launch();
+const ctx = await b.newContext({ viewport:{width:360,height:780}, locale:"fa-IR" });
+const p = await ctx.newPage(); await login(p,"admin");
+await p.addStyleTag({content:`html{font-size:200% !important}`});
+await p.goto(`${BASE}/`); await p.waitForTimeout(1000);
+const w = await p.evaluate(()=>[...document.querySelectorAll(".main *")].filter(e=>e.getBoundingClientRect().right>innerWidth+2||e.getBoundingClientRect().left<-2).slice(0,6).map(e=>e.tagName+"."+e.className+" "+Math.round(e.getBoundingClientRect().width)));
+console.log(w);
+await p.screenshot({path:`${OUT}/text200-dash.png`});
+await ctx.close();
+const c2 = await b.newContext({ viewport:{width:320,height:600}, locale:"fa-IR" });
+const q = await c2.newPage(); await login(q,"admin"); await q.goto(`${BASE}/`); await q.waitForTimeout(1000);
+console.log(await q.evaluate(()=>[...document.querySelectorAll(".main *")].filter(e=>e.getBoundingClientRect().right>innerWidth+2||e.getBoundingClientRect().left<-2).slice(0,6).map(e=>e.tagName+"."+e.className+" "+Math.round(e.getBoundingClientRect().width))));
+await q.screenshot({path:`${OUT}/w320-dash.png`});
+await b.close();

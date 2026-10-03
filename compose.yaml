@@ -1,0 +1,61 @@
+# On-prem stack: app + PostgreSQL.  Secrets come from .env (copy .env.example; see docs/DEPLOYMENT.md).
+#   docker compose build
+#   docker compose up -d          # `migrate` runs once, then `app` starts
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tms
+      POSTGRES_USER: tms
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
+    volumes:
+      - tms-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tms -d tms"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    expose: ["5432"]          # never published on the host
+    deploy:
+      resources:
+        limits: { memory: 1g, cpus: "1.0" }
+
+  migrate:
+    image: tms:latest
+    build: .
+    env_file: [.env]
+    environment:
+      DATABASE_URL: postgresql+psycopg://tms:${POSTGRES_PASSWORD}@db:5432/tms
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+
+  app:
+    image: tms:latest
+    build: .
+    restart: unless-stopped
+    env_file: [.env]
+    environment:
+      DATABASE_URL: postgresql+psycopg://tms:${POSTGRES_PASSWORD}@db:5432/tms
+    depends_on:
+      db: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
+    ports:
+      - "${TMS_BIND:-127.0.0.1}:${TMS_PORT:-8000}:8000"   # loopback by default: put nginx/TLS in front
+    volumes:
+      - tms-data:/data
+    read_only: true
+    tmpfs: ["/tmp"]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits: { memory: 1g, cpus: "2.0" }
+
+volumes:
+  tms-pgdata:
+  tms-data:
