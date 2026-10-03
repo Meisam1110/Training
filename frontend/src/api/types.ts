@@ -21,7 +21,8 @@ export interface Employee {
 }
 
 // ---- Courses & runs ----
-export interface Course { id: number; name_fa: string; name_en: string; category: string; delivery: "online" | "in_person" }
+export interface Course { id: number; name_fa: string; name_en: string; category: string; delivery: "online" | "in_person"; duration_h: number | null; active: boolean }
+export interface CourseInput { name_fa: string; name_en: string; category: string; duration_h: number | null; active: boolean }
 /** Backend run status (RunStatus in backend/app/schemas/domain.py). */
 export type RunStatus = "planned" | "announced" | "open" | "running" | "completed" | "cancelled";
 export const RUN_STATUSES: RunStatus[] = ["planned", "announced", "open", "running", "completed", "cancelled"];

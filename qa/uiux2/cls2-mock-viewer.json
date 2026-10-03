@@ -1,0 +1,182 @@
+{
+ "target": "mock",
+ "role": "viewer",
+ "errs": [],
+ "out": [
+  {
+   "route": "/",
+   "shiftCount": 1,
+   "total": 0.2518,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 550,
+     "v": 0.2518,
+     "src": [
+      "card 130>0@y531>0",
+      "muted 26>27@y191>197",
+      "card dash-card 185>250@y322>650"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/runs",
+   "shiftCount": 1,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 659,
+     "v": 0,
+     "src": [
+      "th-sort 44>44@y241>241"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/runs/1",
+   "shiftCount": 1,
+   "total": 0.0012,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 461,
+     "v": 0.0012,
+     "src": [
+      "wordmark__mark 36>36@y31>24",
+      "nav 605>619@y98>84",
+      "#text 23>23@y736>733"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/runs/1/candidates",
+   "shiftCount": 1,
+   "total": 0.0013,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 476,
+     "v": 0.0013,
+     "src": [
+      "DIV 44>70@y36>28",
+      "row 44>44@y32>54",
+      "callout callout--info 52>52@y100>122"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/enrollments",
+   "shiftCount": 0,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/letters",
+   "shiftCount": 0,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/employees",
+   "shiftCount": 1,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 656,
+     "v": 0,
+     "src": [
+      "th-sort 44>44@y241>241"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/connectors",
+   "shiftCount": 1,
+   "total": 0.0014,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 320,
+     "v": 0.0014,
+     "src": [
+      "btn 44>44@y234>234",
+      "nav 605>619@y98>84",
+      "#text 23>23@y736>733"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/automation",
+   "shiftCount": 0,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/import-export",
+   "shiftCount": 1,
+   "total": 0.0014,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 336,
+     "v": 0.0014,
+     "src": [
+      "btn 44>44@y234>234",
+      "nav 605>619@y98>84",
+      "#text 23>23@y736>733"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/admin",
+   "shiftCount": 1,
+   "total": 0.0014,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 465,
+     "v": 0.0014,
+     "src": [
+      "btn 44>44@y212>212",
+      "nav 605>619@y98>84",
+      "#text 23>23@y736>733"
+     ]
+    }
+   ],
+   "apiCalls": [],
+   "mutationsAfter4s": 0
+  }
+ ]
+}

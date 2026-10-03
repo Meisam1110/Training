@@ -14,9 +14,12 @@ from .models import (  # noqa: F401
                      LetterCounter,
                      LoginAttempt,
                      MessageLog,
+                     MessageTemplate,
+                     MessageTemplateVersion,
                      Setting,
                      SyncRun,
                      User,
+                     UserPrefs,
                      UserSession,
                      utcnow,
 )

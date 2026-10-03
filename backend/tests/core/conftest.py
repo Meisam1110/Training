@@ -157,6 +157,7 @@ class Api:
     def post(self, url, **kw): return self.req("POST", url, **kw)
     def put(self, url, **kw): return self.req("PUT", url, **kw)
     def patch(self, url, **kw): return self.req("PATCH", url, **kw)
+    def delete(self, url, **kw): return self.req("DELETE", url, **kw)
 
 
 @pytest.fixture

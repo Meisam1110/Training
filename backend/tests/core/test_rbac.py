@@ -23,6 +23,13 @@ TABLE = [
     ("PUT", "/automation/settings", "admin"),
     ("POST", "/import/idp", "hr"), ("POST", "/import/legacy-workbook", "hr"), ("GET", "/export/legacy.xlsx", "hr"),
     ("GET", "/users", "admin"), ("POST", "/users", "admin"), ("PATCH", "/users/1", "admin"), ("GET", "/audit", "admin"),
+    ("GET", "/templates/fields", "viewer"), ("GET", "/templates", "viewer"), ("POST", "/templates", "hr"), ("POST", "/templates/preview", "hr"),
+    ("GET", "/templates/1", "viewer"), ("PATCH", "/templates/1", "hr"), ("DELETE", "/templates/1", "hr"),
+    ("POST", "/templates/1:duplicate", "hr"), ("POST", "/templates/1:set-default", "hr"), ("POST", "/templates/1:send-test", "hr"),
+    ("GET", "/templates/1/versions", "viewer"), ("POST", "/templates/1/versions/1:restore", "hr"),
+    ("GET", "/dashboard/widgets", "viewer"), ("GET", "/dashboard/data?widgets=kpi_enrollments", "viewer"),
+    ("GET", "/me/dashboard-layout", "viewer"), ("PUT", "/me/dashboard-layout", "viewer"), ("DELETE", "/me/dashboard-layout", "viewer"),
+    ("GET", "/me/preferences", "viewer"), ("PUT", "/me/preferences", "viewer"),
     ("GET", "/institutes", "viewer"), ("POST", "/institutes", "hr"), ("PATCH", "/institutes/1", "hr"),
 ]
 
@@ -45,7 +52,7 @@ def test_every_api_route_is_covered_and_declares_a_role(app):
     import pkgutil
 
     import app.api.routers as pkg
-    shapes = {(m, _shape("/api/v1" + p)) for m, p, _ in TABLE}
+    shapes = {(m, _shape("/api/v1" + p.split("?")[0])) for m, p, _ in TABLE}
     seen = 0
     for mod in pkgutil.iter_modules(pkg.__path__):
         router = importlib.import_module(f"app.api.routers.{mod.name}").router
@@ -68,7 +75,7 @@ def _shape(p: str) -> str:
     out = []
     for seg in p.split("/"):
         seg = re.sub(r"^\{[a-z_]+\}", "{}", seg)
-        seg = re.sub(r"^(E\d+|\d+)$", "{}", seg)
+        seg = re.sub(r"^(E\d+|\d+)(?=:|$)", "{}", seg)
         seg = re.sub(r"^(excel|smtp)(:|$)", r"{}\2", seg)
         out.append(seg)
     return "/".join(out)

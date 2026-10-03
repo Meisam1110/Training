@@ -15,7 +15,9 @@
     "typecheck": "tsc --noEmit",
     "pretest": "npm run tokens",
     "test": "vitest run",
-    "screenshots": "node scripts/screenshots.mjs"
+    "screenshots": "node scripts/screenshots.mjs",
+    "cls": "node scripts/cls.mjs",
+    "audit:digits": "node scripts/digits-audit.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.59.0",

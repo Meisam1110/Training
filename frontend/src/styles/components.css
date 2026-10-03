@@ -192,7 +192,6 @@
 /* ---- round 2: QA fixes ---- */
 .chip { white-space: normal; max-inline-size: 100%; overflow-wrap: anywhere; }
 td .chip, .dash-list .chip { white-space: nowrap; }
-@media (max-width: 480px) { td .chip { white-space: normal; } }
 .id { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; direction: ltr; unicode-bidi: isolate; display: inline-block; white-space: nowrap; text-align: start; font-variant-numeric: tabular-nums; }
 .kv dd { text-align: start; min-inline-size: 0; overflow-wrap: anywhere; }
 .hit { display: inline-flex; align-items: center; justify-content: center; min-inline-size: var(--min-touch); min-block-size: var(--min-touch); cursor: pointer; }
@@ -213,3 +212,19 @@ td .chip, .dash-list .chip { white-space: nowrap; }
 .th-sort { min-inline-size: var(--min-touch); }
 .dash-list a:not(.btn), .pager a:not(.btn), .card a:not(.btn):not(.skip-link) { display: inline-flex; align-items: center; min-block-size: var(--min-touch); }
 .field__hint a, p a:not(.btn) { min-block-size: 0; }
+
+/* ---- layout stability: reserve the space data will occupy, so skeleton -> content never moves the page ---- */
+.dash-body { min-block-size: 17rem; display: flex; flex-direction: column; gap: var(--space-3); }
+.due-body { min-block-size: 19rem; display: flex; flex-direction: column; gap: var(--space-3); }
+.dash-sync { min-block-size: 26px; }
+.conn-skel { min-block-size: 40rem; }
+.letters-col { min-block-size: 38rem; }
+.preview-slot { min-block-size: 24rem; }
+.fetch-hint { min-inline-size: 12ch; }
+.fetch-hint[data-on="false"] { visibility: hidden; }
+.nowrap { white-space: nowrap; }
+.cell-actions { flex-wrap: nowrap; }
+.cell-actions .btn { white-space: nowrap; }
+.latin { direction: ltr; unicode-bidi: isolate; display: inline-block; }
+.table th, .table td { padding-inline: var(--space-3); }
+.table th:first-child, .table td:first-child { padding-inline-start: var(--space-4); }

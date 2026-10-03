@@ -149,12 +149,14 @@ class DocxLetterRenderer:
                 return scalar(name, flt)
             return r
 
+        sig_image = engine.validated_image(fields.get("signature_image"))
         hide = frozenset(f.name for f in spec.fields if f.hide_if_empty)
         engine.expand_rows(doc, lists, item_res)
         try:
             engine.replace_everywhere(doc, scalar, hide)
         except KeyError as exc:
             raise TemplateError(f"placeholder {exc.args[0]} has no value") from None
+        engine.apply_signature_image(doc, sig_image)
         left = engine.leftover_placeholders(doc)
         if left:
             raise TemplateError(f"unresolved placeholders after rendering: {', '.join(sorted(set(left)))}")
@@ -169,6 +171,15 @@ class DocxLetterRenderer:
         flat.update({k: list(v) for k, v in lists.items()})
         return RenderedLetter(kind=kind, filename=self._filename(kind, values, eff), docx_bytes=buf.getvalue(),
                               html_body=html, subject=title, fields=flat)
+
+    def render_custom(self, subject: str, body_html: str, fields: Mapping[str, Any],
+                      lang: Literal["fa", "en"] = "fa", letterhead: bool = True) -> RenderedLetter:
+        """Render a USER-CREATED template (editor HTML with ``{{key}}`` / ``<span data-field="key">`` tokens).
+        Raises ``UnknownFieldError`` (unknown tokens) or ``MissingFieldError`` (known but empty, not ``{{key?}}``).
+        Returns the same ``RenderedLetter`` (kind ``"custom"``); the .docx is built from the sanitised HTML on the
+        letterhead when ``letterhead`` is true."""
+        from .custom import render_custom_letter
+        return render_custom_letter(self.dir, self.persian_digits, subject, body_html, fields, lang, letterhead)
 
     # ------------------------------------------------------------------ internals
     @staticmethod

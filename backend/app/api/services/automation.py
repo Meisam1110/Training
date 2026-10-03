@@ -95,7 +95,7 @@ def _reminder_html(e: Enrollment) -> tuple[str, str]:
     course = html.escape(e.course_name)
     deadline = e.run.deadline.isoformat() if e.run and e.run.deadline else ""
     subject = f"یادآوری مهلت ثبت‌نام / Registration reminder: {e.course_name}"[:300]
-    body = (f"<p dir='rtl'>همکار گرامی، مهلت ثبت‌نام دورهٔ «{course}» تا {html.escape(deadline)} است؛ لطفاً انگیزه‌نامه را تکمیل کنید.</p>"
+    body = (f"<p dir='rtl'>همکار گرامی، مهلت ثبت‌نام دورهٔ «{course}» تا {html.escape(deadline)} است؛ لطفاً موتیویشن را تکمیل کنید.</p>"
             f"<p>Dear colleague, the registration deadline for &ldquo;{course}&rdquo; is {html.escape(deadline)}. "
             f"Please submit your motivation.</p>")
     return subject, body

@@ -18,7 +18,7 @@ import { toFa } from "../lib/digits";
 
 const TRI_OPTS = (["yes", "no", "pending"] as const).map((v) => ({ value: v, label: TRI_FA[v] }));
 const ATT_OPTS = (["attended", "absent", "pending"] as const).map((v) => ({ value: v, label: ATT_FA[v] }));
-const FIELD_FA: Record<EditableEnrollmentField, string> = { motivation: "انگیزه‌نامه", registration: "ثبت‌نام", calendar: "تقویم", attendance: "حضور" };
+const FIELD_FA: Record<EditableEnrollmentField, string> = { motivation: "موتیویشن", registration: "ثبت‌نام", calendar: "تقویم", attendance: "حضور" };
 
 /** Inline-editable enrollments table: optimistic updates, rollback on failure, undo toast. */
 export function EnrollmentsTable({ runId, showRun = true, initialQ = "", initialMotivation = "" }: { runId?: number; showRun?: boolean; initialQ?: string; initialMotivation?: string }) {
@@ -37,7 +37,8 @@ export function EnrollmentsTable({ runId, showRun = true, initialQ = "", initial
     onMutate: async () => { await qc.cancelQueries({ queryKey: ["enrollments"] }); },
     onError: (e, { id, prev }) => { patchCaches(id, prev); toast.push({ kind: "error", message: `ذخیره نشد و مقدار قبلی برگردانده شد: ${errMsg(e)}` }); },
     onSuccess: (_d, { id, prev, patch, undo }) => {
-      void qc.invalidateQueries({ queryKey: ["enrollments"] }); void qc.invalidateQueries({ queryKey: ["dashboard"] });
+      // no list refetch here: the optimistic cache already holds the truth, and a refetch under an active sort would re-order rows under the cursor
+      void qc.invalidateQueries({ queryKey: ["dashboard"] });
       if (undo) { toast.push({ message: "تغییر برگردانده شد." }); return; }
       const f = Object.keys(patch)[0] as EditableEnrollmentField;
       toast.push({ message: `«${FIELD_FA[f]}» ذخیره شد.`, action: { label: "برگردان", onClick: () => run({ id, patch: prev, prev: patch, undo: true }) } });
@@ -54,10 +55,10 @@ export function EnrollmentsTable({ runId, showRun = true, initialQ = "", initial
     onError: (e, { ids, prev }) => { ids.forEach((id) => patchCaches(id, { motivation: prev.get(id) ?? "pending" })); toast.push({ kind: "error", message: `اعمال گروهی انجام نشد و مقدارهای قبلی برگردانده شد: ${errMsg(e)}` }); },
     onSuccess: (r, { value, prev, undo }) => {
       r.failed.forEach((f) => patchCaches(f.id, { motivation: prev.get(f.id) ?? "pending" }));
-      void qc.invalidateQueries({ queryKey: ["enrollments"] }); void qc.invalidateQueries({ queryKey: ["dashboard"] }); void qc.invalidateQueries({ queryKey: ["run"] });
+      void qc.invalidateQueries({ queryKey: ["dashboard"] }); void qc.invalidateQueries({ queryKey: ["run"] });
       if (undo) { toast.push({ message: "تغییر گروهی برگردانده شد." }); return; }
       const done = r.updated.length;
-      toast.push({ kind: r.failed.length ? "error" : "info", message: `«انگیزه‌نامه: ${TRI_FA[value]}» برای ${toFa(done)} نفر ثبت شد${r.failed.length ? ` (${toFa(r.failed.length)} مورد ناموفق)` : ""}.`,
+      toast.push({ kind: r.failed.length ? "error" : "info", message: `«موتیویشن: ${TRI_FA[value]}» برای ${toFa(done)} نفر ثبت شد${r.failed.length ? ` (${toFa(r.failed.length)} مورد ناموفق)` : ""}.`,
         action: { label: "برگردان", onClick: () => undoBulk(r.updated, prev) } });
     },
   });
@@ -85,7 +86,7 @@ export function EnrollmentsTable({ runId, showRun = true, initialQ = "", initial
     { id: "name_fa", header: "نام", cell: ({ row }) => <span><strong>{row.original.name_fa}</strong><br /><span className="muted">{row.original.division}</span></span> },
     ...(showRun ? [{ id: "run_name_fa", header: "دوره", cell: ({ row }: { row: { original: Enrollment } }) => <Link to={`/runs/${row.original.run_id}`}>{row.original.run_name_fa}</Link> } as ColumnDef<Enrollment, any>] : []),
     { id: "ticket", header: "تیکت", cell: ({ row }) => <Ident>{row.original.ticket}</Ident> },
-    { id: "motivation", header: "انگیزه‌نامه", cell: cell("motivation", TRI_OPTS) },
+    { id: "motivation", header: "موتیویشن", cell: cell("motivation", TRI_OPTS) },
     { id: "registration", header: "ثبت‌نام", cell: cell("registration", TRI_OPTS), enableSorting: false },
     { id: "calendar", header: "تقویم", cell: cell("calendar", TRI_OPTS), enableSorting: false },
     { id: "attendance", header: "حضور", cell: cell("attendance", ATT_OPTS), enableSorting: false },
@@ -94,19 +95,19 @@ export function EnrollmentsTable({ runId, showRun = true, initialQ = "", initial
     <div className="card card--flush">
       <div className="toolbar" role="search">
         <div className="search"><TextField label="جستجو" value={q} onChange={(v) => { setQ(v); setPage(1); }} placeholder="نام، شمارهٔ پرسنلی یا تیکت" type="search" /></div>
-        <SelectField label="انگیزه‌نامه" value={motivation} onChange={(v) => { setMotivation(v); setPage(1); }} placeholder="همه" options={TRI_OPTS} />
+        <SelectField label="موتیویشن" value={motivation} onChange={(v) => { setMotivation(v); setPage(1); }} placeholder="همه" options={TRI_OPTS} />
       </div>
       {sel.size > 0 && <div className="bulkbar" role="region" aria-label="عملیات گروهی">
         <strong aria-live="polite">{toFa(sel.size)} ردیف انتخاب شده</strong>
-        <Button size="sm" variant="primary" onClick={() => setAsk("yes")}>تأیید انگیزه‌نامه (بله)</Button>
-        <Button size="sm" onClick={() => setAsk("no")}>رد انگیزه‌نامه (خیر)</Button>
+        <Button size="sm" variant="primary" onClick={() => setAsk("yes")}>تأیید موتیویشن (بله)</Button>
+        <Button size="sm" onClick={() => setAsk("no")}>رد موتیویشن (خیر)</Button>
         <Button size="sm" variant="ghost" onClick={() => setSel(new Set())}>پاک کردن انتخاب</Button>
       </div>}
       <DataTable caption="فهرست ثبت‌نام‌ها" columns={cols} data={list.data?.items} getRowId={(e) => String(e.id)} loading={list.isLoading} error={list.error} onRetry={() => list.refetch()}
         sort={sort} onSort={setSort} page={page} pageSize={25} total={list.data?.total} onPage={setPage}
         empty={{ title: dq || motivation ? "نتیجه‌ای پیدا نشد" : "هنوز ثبت‌نامی وجود ندارد", description: dq || motivation ? "فیلترها را تغییر دهید." : "کاندیداها را به یک دوره اضافه کنید تا اینجا دیده شوند.", action: !(dq || motivation) && runId ? <LinkButton variant="primary" href={`#/runs/${runId}/candidates`}>انتخاب کاندیدا</LinkButton> : undefined }} />
-      <ConfirmDialog open={!!ask} title="ثبت گروهی انگیزه‌نامه" confirmLabel={ask === "yes" ? "ثبت «بله» برای همه" : "ثبت «خیر» برای همه"} pending={bulk.isPending} onCancel={() => setAsk(null)} onConfirm={() => ask && applyBulk(ask)}
-        consequence={`انگیزه‌نامهٔ ${toFa(sel.size)} نفر روی «${ask ? TRI_FA[ask] : ""}» تنظیم می‌شود و در گزارش ممیزی ثبت می‌شود. بلافاصله می‌توانید با «برگردان» آن را لغو کنید.`} />
+      <ConfirmDialog open={!!ask} title="ثبت گروهی موتیویشن" confirmLabel={ask === "yes" ? "ثبت «بله» برای همه" : "ثبت «خیر» برای همه"} pending={bulk.isPending} onCancel={() => setAsk(null)} onConfirm={() => ask && applyBulk(ask)}
+        consequence={`موتیویشن ${toFa(sel.size)} نفر روی «${ask ? TRI_FA[ask] : ""}» تنظیم می‌شود و در گزارش ممیزی ثبت می‌شود. بلافاصله می‌توانید با «برگردان» آن را لغو کنید.`} />
       {list.data && <p className="pager muted" style={{ border: 0 }}>{toFa(list.data.total)} ثبت‌نام{canWrite ? " · با تغییر هر فیلد، ذخیره فوری انجام و امکان «برگردان» فراهم می‌شود." : " · نقش شما فقط مشاهده است."}</p>}
     </div>
   );
@@ -115,7 +116,7 @@ export function EnrollmentsTable({ runId, showRun = true, initialQ = "", initial
 export function EnrollmentsScreen() {
   const route = useRoute(); const run = route.query.get("run");
   return (<>
-    <PageHead title="ثبت‌نام‌ها" subtitle="وضعیت انگیزه‌نامه، ثبت‌نام، تقویم و حضور هر کاربر" />
+    <PageHead title="ثبت‌نام‌ها" subtitle="وضعیت موتیویشن، ثبت‌نام، تقویم و حضور هر کاربر" />
     <EnrollmentsTable key={route.path + route.query.toString()} runId={run ? Number(run) : undefined} initialQ={route.query.get("q") ?? ""} initialMotivation={route.query.get("motivation") ?? ""} />
   </>);
 }

@@ -103,5 +103,5 @@ QA-H4 saw > 2.8 GB before). A 1 GB container therefore holds two workers plus a 
 * Logs: JSON lines on stdout (`docker compose logs app`); request lines carry the path only, never the query string.
 * Shutdown: SIGTERM drains within 20 s (`--timeout-graceful-shutdown`), stops the automation loop, disposes the DB pool.
 * Resource defaults: app 2 CPU / 1 GB, db 1 CPU / 1 GB; read-only root filesystem, no capabilities, `/data` volume only.
-* Imports/syncs: `POST /sync/{src}:run` and `/import/*` answer `200` with the finished run, or `202` with `status:"running"`; poll `GET /sync/runs` (`processed`, `message`).
+* «انتقال اطلاعات» (import/export: `/import/*`, `/export/*`) and syncs: `POST /sync/{src}:run` and `/import/*` answer `200` with the finished run, or `202` with `status:"running"`; poll `GET /sync/runs` (`processed`, `message`).
 * Local dev: `make install && make demo` (synthetic data, demo logins printed once), `make test`, `make lint`.

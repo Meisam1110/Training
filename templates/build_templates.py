@@ -56,13 +56,13 @@ def setup(doc: Document, header_img: str | None = None, footer_img: str | None =
     sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if header_img:
         sec.header_distance = Cm(0.5)
-        sec.top_margin = Cm(5.2)
+        sec.top_margin = Cm(4.7)
         hp = sec.header.paragraphs[0]
         hp.alignment = WD_ALIGN_PARAGRAPH.CENTER
         hp.add_run().add_picture(str(ASSETS / header_img), width=Cm(19.0))
     if footer_img:
         sec.footer_distance = Cm(0.5)
-        sec.bottom_margin = Cm(2.6)
+        sec.bottom_margin = Cm(2.4)
         fp = sec.footer.paragraphs[0]
         fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
         fp.add_run().add_picture(str(ASSETS / footer_img), width=Cm(19.0))
@@ -216,9 +216,22 @@ def emit(doc, blocks, rtl: bool):
             add_row(t, [c for _, c in cols], rtl)
             spacer(doc)
         elif kind == "sign":
-            lines = b[1]
-            for i, ln in enumerate(lines):
-                para(doc, ln, rtl=rtl, bold=(i == 1 and not ln.startswith("{{") and len(lines) == 3), space_after=1)
+            for i, ln in enumerate(b[1]):
+                sp = para(doc, ln, rtl=rtl, bold=("{{signer_name_fa}}" in ln or "{{unit_fa}}" in ln), space_after=1)
+                sp.paragraph_format.keep_with_next = i < len(b[1]) - 1      # a signature block never splits across pages
+                sp.paragraph_format.keep_together = True
+        elif kind == "sign_formal":
+            # official letter: closing + signature block on the left side of the page (right cell empty in RTL)
+            t = table(doc, 2, rtl, [CONTENT_W_CM - 7.0, 7.0])
+            t._tbl.tblPr.remove(t._tbl.tblPr.find(qn("w:tblBorders")))
+            row = t.add_row()
+            cell = row.cells[1]
+            row.cells[0].width, cell.width = Cm(CONTENT_W_CM - 7.0), Cm(7.0)
+            cell.paragraphs[0]._p.getparent().remove(cell.paragraphs[0]._p)
+            for ln in b[1]:
+                para(cell, ln, rtl=rtl, center=True, bold=("{{signer_name_fa}}" in ln or "{{unit_fa}}" in ln), space_after=1)
+            if not cell.paragraphs:
+                cell.add_paragraph()
         else:
             raise ValueError(kind)
 

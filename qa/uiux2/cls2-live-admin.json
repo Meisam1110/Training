@@ -1,0 +1,254 @@
+{
+ "target": "live",
+ "role": "admin",
+ "errs": [],
+ "out": [
+  {
+   "route": "/",
+   "shiftCount": 2,
+   "total": 0.2304,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 83,
+     "v": 0.0103,
+     "src": [
+      "HTML 8>900@y0>0"
+     ]
+    },
+    {
+     "t": 134,
+     "v": 0.2201,
+     "src": [
+      "card 369>0@y531>0",
+      "muted 26>27@y191>197",
+      "card dash-card 185>344@y322>556"
+     ]
+    }
+   ],
+   "apiCalls": [
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/dashboard",
+    "+0.0s GET /api/v1/automation/due"
+   ],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/runs",
+   "shiftCount": 1,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 126,
+     "v": 0,
+     "src": [
+      "th-sort 44>44@y241>241"
+     ]
+    }
+   ],
+   "apiCalls": [
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/runs?page=1&page_size=15&sort=-start_date"
+   ],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/runs/1",
+   "shiftCount": 1,
+   "total": 0.0012,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 113,
+     "v": 0.0012,
+     "src": [
+      "wordmark__mark 36>36@y31>24",
+      "nav 605>619@y98>84",
+      "#text 23>23@y736>733"
+     ]
+    }
+   ],
+   "apiCalls": [
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/runs/1",
+    "+0.1s GET /api/v1/letters?page_size=100",
+    "+0.1s GET /api/v1/enrollments?page=1&page_size=25&run_id=1"
+   ],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/runs/1/candidates",
+   "shiftCount": 2,
+   "total": 0.0197,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 80,
+     "v": 0.0103,
+     "src": [
+      "HTML 8>900@y0>0"
+     ]
+    },
+    {
+     "t": 147,
+     "v": 0.0094,
+     "src": [
+      "DIV 44>70@y36>28",
+      "row 44>44@y32>54",
+      "card card--flush 556>659@y100>122"
+     ]
+    }
+   ],
+   "apiCalls": [
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/runs/1",
+    "+0.0s POST /api/v1/runs/1/candidates:search"
+   ],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/enrollments",
+   "shiftCount": 1,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 172,
+     "v": 0,
+     "src": [
+      "th-sort 44>44@y241>241",
+      "th-sort 44>44@y241>241",
+      "th-sort 44>44@y241>241"
+     ]
+    }
+   ],
+   "apiCalls": [
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/enrollments?page=1&page_size=25"
+   ],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/letters",
+   "shiftCount": 0,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [],
+   "apiCalls": [
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/runs?page_size=100&sort=-start_date",
+    "+0.0s GET /api/v1/letters?page_size=50"
+   ],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/employees",
+   "shiftCount": 1,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 127,
+     "v": 0,
+     "src": [
+      "th-sort 44>44@y241>241"
+     ]
+    }
+   ],
+   "apiCalls": [
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/employees?sort=emp_no&page=1&page_size=100"
+   ],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/connectors",
+   "shiftCount": 1,
+   "total": 0.2968,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 156,
+     "v": 0.2968,
+     "src": [
+      "card card--flush 424>0@y416>0"
+     ]
+    }
+   ],
+   "apiCalls": [
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/sync/runs?page_size=20",
+    "+0.0s GET /api/v1/connectors"
+   ],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/automation",
+   "shiftCount": 1,
+   "total": 0.0172,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 203,
+     "v": 0.0172,
+     "src": [
+      "LI 85>95@y815>764",
+      "nav 605>619@y98>84",
+      "LI 104>96@y502>476"
+     ]
+    }
+   ],
+   "apiCalls": [
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/automation/due",
+    "+0.0s GET /api/v1/automation/settings"
+   ],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/import-export",
+   "shiftCount": 1,
+   "total": 0.0044,
+   "lateShifts": [],
+   "firstShifts": [
+    {
+     "t": 160,
+     "v": 0.0044,
+     "src": [
+      "#text 25>25@y425>422",
+      "nav 605>619@y98>84",
+      "#text 25>25@y425>422"
+     ]
+    }
+   ],
+   "apiCalls": [
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/auth/me"
+   ],
+   "mutationsAfter4s": 0
+  },
+  {
+   "route": "/admin",
+   "shiftCount": 0,
+   "total": 0,
+   "lateShifts": [],
+   "firstShifts": [],
+   "apiCalls": [
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/auth/me",
+    "+0.0s GET /api/v1/users?page_size=100"
+   ],
+   "mutationsAfter4s": 0
+  }
+ ]
+}

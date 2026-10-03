@@ -28,8 +28,10 @@ from app.api.routers import (
     importexport,
     institutes,
     letters,
+    me,
     runs,
     sync,
+    templates,
 )
 from app.api.services import automation as automation_svc
 from app.api.services import sync as sync_svc
@@ -124,7 +126,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     errors.install(app)
 
     for r in (auth, dashboard, employees, courses, runs, enrollments, letters, email, connectors, sync, automation,
-              importexport, admin, institutes):
+              importexport, admin, institutes, templates, me):
         app.include_router(r.router, prefix=API)
 
     def _health():

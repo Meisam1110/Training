@@ -39,3 +39,4 @@ backend/data/
 *.sqlite
 *.sqlite3
 qa/uiux/sweep-results.json
+qa/uiux2/**/*.png

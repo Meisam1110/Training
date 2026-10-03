@@ -154,7 +154,7 @@ export type HttpClient = ReturnType<typeof createClient>;
 import type {
   CandidateResult, CandidateSearch, Connector, ConnectorKind, ConnectorUpdate, Course, CourseRun, Dashboard, Employee,
   Enrollment, EnrollmentPatch, BulkEnrollmentRequest, BulkResult, EmailSendRequest, EmailSendResult, Letter, LetterPreview, LetterRequest,
-  LoginResult, MessageLog, NewUser, UserPatch, Institute, NewInstitute, RunInput, SyncRun, TestResult, User, AuditEntry, DueItem, AutomationSettings, AutomationInfo,
+  LoginResult, CourseInput, MessageLog, NewUser, UserPatch, Institute, NewInstitute, RunInput, SyncRun, TestResult, User, AuditEntry, DueItem, AutomationSettings, AutomationInfo,
   AutomationRunResult, ImportResult,
 } from "./types";
 import * as W from "./wire";
@@ -169,7 +169,7 @@ export function createApi(http: HttpClient, opts: { wire?: boolean } = {}) {
   /** apply `f` only when talking to the real backend */
   const m = <A, B>(f: (a: A) => B) => (a: A): B => (wire ? f(a) : (a as unknown as B));
   const mp = <A, B>(f: (a: A) => B) => (p: Page<A>): Page<B> => (wire ? mapPage(p, f) : (p as unknown as Page<B>));
-  const q = (entity: "runs" | "enrollments" | "employees", p: ListParams): ListParams => {
+  const q = (entity: "runs" | "enrollments" | "employees" | "courses", p: ListParams): ListParams => {
     const o = cap(p);
     if (wire) { const s = W.sortParam(entity, p.sort); if (s) o.sort = s; else delete o.sort; }
     if (wire && entity === "enrollments" && o.motivation) o.motivation = o.motivation === "pending" ? "none" : W.triTo(String(o.motivation) as "yes");
@@ -187,8 +187,10 @@ export function createApi(http: HttpClient, opts: { wire?: boolean } = {}) {
     // employees
     employees: (p: ListParams) => http.get<Page<Employee>>("/employees", q("employees", p)).then(mp(W.employee as never) as (p: Page<Employee>) => Page<Employee>),
     employee: (empNo: string, reveal = false) => http.get<Employee>(`/employees/${encodeURIComponent(empNo)}`, reveal ? { reveal: 1 } : undefined).then(m(W.employee as never) as (e: Employee) => Employee),
+    createCourse: (b: CourseInput) => http.post<Course>("/courses", wire ? W.courseBody(b) : b).then(m(W.course as never) as (c: Course) => Course),
+    updateCourse: (id: number, b: CourseInput) => http.patch<Course>(`/courses/${id}`, wire ? W.courseBody(b) : b).then(m(W.course as never) as (c: Course) => Course),
     // courses & runs
-    courses: (p: ListParams = {}) => http.get<Page<Course>>("/courses", cap(p)).then(mp(W.course as never) as (p: Page<Course>) => Page<Course>),
+    courses: (p: ListParams = {}) => http.get<Page<Course>>("/courses", q("courses", p)).then(mp(W.course as never) as (p: Page<Course>) => Page<Course>),
     runs: (p: ListParams) => http.get<Page<CourseRun>>("/runs", q("runs", p)).then(mp(W.run as never) as (p: Page<CourseRun>) => Page<CourseRun>),
     run: (id: number) => http.get<CourseRun>(`/runs/${id}`).then(m(W.run as never) as (r: CourseRun) => CourseRun),
     createRun: (b: RunInput) => http.post<CourseRun>("/runs", wire ? W.runBody(b) : b).then(m(W.run as never) as (r: CourseRun) => CourseRun),

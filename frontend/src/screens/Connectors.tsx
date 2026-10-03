@@ -115,7 +115,7 @@ export function ConnectorsScreen() {
   return (<>
     <PageHead title="اتصال‌ها" subtitle="منابع داده و سرویس‌های ایمیل. رمزها فقط نوشتنی‌اند و هرگز نمایش داده نمی‌شوند." />
     {q.error ? <div className="card"><ErrorState error={q.error} onRetry={() => q.refetch()} /></div>
-      : q.isLoading ? <div className="grid grid--2"><div className="card"><Skeleton h={220} /></div><div className="card"><Skeleton h={220} /></div></div>
+      : q.isLoading ? <div className="grid grid--2"><div className="card conn-skel"><Skeleton h={220} /></div><div className="card conn-skel"><Skeleton h={220} /></div></div>
       : <div className="grid grid--2" style={{ alignItems: "start" }}>{q.data!.map((c) => <ConnectorCard key={c.kind} c={c} canEdit={isAdmin} canRun={canWrite} />)}</div>}
     <section className="card card--flush" style={{ marginBlockStart: "var(--space-5)" }}>
       <div className="card__head" style={{ padding: "var(--space-4) var(--space-4) 0" }}><h2 style={{ fontSize: "var(--fs-4)" }}>تاریخچهٔ همگام‌سازی</h2></div>

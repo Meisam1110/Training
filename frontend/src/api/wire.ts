@@ -3,7 +3,7 @@
 // (the in-memory mock already speaks UI types). Everything here is covered by wire.test.ts using
 // payloads captured from the running backend.
 import type {
-  AuditEntry, Attendance, ImportError, Institute, NewInstitute, RunWorkflow, UserPatch, AutomationSettings, BulkEnrollmentRequest, Candidate, CandidateFlag, CandidateResult, Connector,
+  AuditEntry, Attendance, CourseInput, ImportError, Institute, NewInstitute, RunWorkflow, UserPatch, AutomationSettings, BulkEnrollmentRequest, Candidate, CandidateFlag, CandidateResult, Connector,
   ConnectorKind, ConnectorUpdate, Course, CourseRun, Dashboard, DashItem, DueItem, EmailSendRequest, EmailSendResult, Employee,
   Enrollment, EnrollmentPatch, ImportResult, Letter, LetterPreview, LetterRequest, MessageLog, RunInput, RunStatus, SyncRun, Tri, User,
 } from "./types";
@@ -26,12 +26,14 @@ export const user = (u: J): User => ({ id: u.id, username: u.username, full_name
 export const institute = (i: J): Institute => ({ id: i.id, name: i.name, name_fa: i.name_fa ?? "", supplier_code: i.supplier_code ?? "", contact_email: i.contact_email ?? "" });
 export const instituteBody = (b: NewInstitute): J => ({ name: b.name, name_fa: b.name_fa, supplier_code: b.supplier_code, contact_email: b.contact_email });
 export const employee = (e: J): Employee => ({
-  emp_no: e.emp_no, name_fa: `${e.first_name_fa ?? ""} ${e.last_name_fa ?? ""}`.trim() || `${e.first_name_en} ${e.last_name_en}`,
+  emp_no: e.emp_no, name_fa: toFa(`${e.first_name_fa ?? ""} ${e.last_name_fa ?? ""}`.trim() || `${e.first_name_en} ${e.last_name_en}`), // display text -> Persian digits
   name_en: `${e.first_name_en ?? ""} ${e.last_name_en ?? ""}`.trim(), gender: e.gender === "female" ? "female" : "male", email: e.email ?? "",
   mobile: e.mobile ?? "", national_code: e.national_code ?? "", division: e.division ?? "", cost_center: e.cost_center ?? "",
   supervisor_emp_no: e.supervisor_emp_no || null, status: /^active$/i.test(e.status ?? "") ? "active" : "inactive", job_title: e.position_title ?? "",
 });
-export const course = (c: J): Course => ({ id: c.id, name_fa: c.name_fa || c.name, name_en: c.name, category: c.category ?? "", delivery: "in_person" });
+export const course = (c: J): Course => ({ id: c.id, name_fa: c.name_fa || c.name, name_en: c.name, category: c.category ?? "", delivery: "in_person", duration_h: c.default_duration_h ?? null, active: c.active !== false });
+/** backend `name` is required (original/English); fall back to the Persian name so a Persian-only course can be saved */
+export const courseBody = (b: CourseInput): J => ({ name: b.name_en.trim() || b.name_fa.trim(), name_fa: b.name_fa.trim(), category: b.category.trim(), default_duration_h: b.duration_h, active: b.active });
 export const run = (r: J): CourseRun => ({
   id: r.id, course_id: r.course_id, course_name_fa: r.course_name_fa || r.course_name, course_name_en: r.course_name, type: r.type, institute: r.institute ?? "",
   duration_h: r.duration_h ?? 0, start_date: r.start_date, end_date: r.end_date ?? r.start_date, days: r.days ?? "", time: r.time ?? "", sessions: r.sessions ?? 0,
@@ -41,7 +43,7 @@ export const run = (r: J): CourseRun => ({
 });
 const workflowOf = (w: J): RunWorkflow => ({ announced: !!w.announced, motivations_collected: !!w.motivations_collected, institute_letter_sent: !!w.institute_letter_sent, invoice_received: !!w.invoice_received, settlement_sent: !!w.settlement_sent, level3_started: !!w.level3_started });
 export const enrollment = (e: J): Enrollment => ({
-  id: e.id, run_id: e.run_id ?? null, run_name_fa: e.course_name ?? "", emp_no: e.emp_no, name_fa: e.employee_name_fa || e.employee_name, division: e.division ?? "",
+  id: e.id, run_id: e.run_id ?? null, run_name_fa: e.course_name ?? "", emp_no: e.emp_no, name_fa: toFa(e.employee_name_fa || e.employee_name), division: e.division ?? "",
   ticket: e.ticket, status: e.status ?? "", motivation: triFrom(e.motivation), registration: triFrom(e.registration), calendar: triFrom(e.calendar),
   attendance: attFrom(e.attendance), level3_status: e.level3_status ?? "", email: e.email ?? "", supervisor_email: e.supervisor_email ?? "",
 });
@@ -83,13 +85,19 @@ const runItem = (r: J, detail: string): DashItem => ({ key: `run-${r.id}`, title
 export const dashboard = (d: J): Dashboard => ({
   not_started_courses: (d.not_started_courses ?? []).map((r: J) => runItem(r, `${toFa(r.days_to_course ?? "?")} روز تا شروع · ${iso(r.institute || "—")}`)),
   payment_not_started: (d.payment_not_started ?? []).map((r: J) => runItem(r, `${toFa(r.days_since_start ?? "?")} روز از شروع · ${iso(r.institute || "—")}`)),
-  over3_motivations: (d.over3_motivations ?? []).map((o: J): DashItem => ({ key: `tk-${o.ticket ?? o.emp_no}`, title: o.employee_name, detail: `${toFa(o.non_yes_count)} بار پیشنهاد بدون تأیید · ${iso(o.ticket ?? "")}`, date: null, run_id: (o.run_ids ?? [])[0] ?? null, emp_no: o.emp_no, ticket: o.ticket ?? null })),
-  level3_due: (d.level3_due ?? []).map((e: J): DashItem => ({ key: `enr-${e.enrollment_id}`, title: e.employee_name, detail: `${toFa(e.days_since_end)} روز از پایان · ${iso(e.course_name)}`, date: e.end_date, run_id: null, emp_no: e.emp_no })),
+  over3_motivations: (d.over3_motivations ?? []).map((o: J): DashItem => ({ key: `tk-${o.ticket ?? o.emp_no}`, title: toFa(o.employee_name), detail: `${toFa(o.non_yes_count)} بار پیشنهاد بدون تأیید · ${iso(o.ticket ?? "")}`, date: null, run_id: (o.run_ids ?? [])[0] ?? null, emp_no: o.emp_no, ticket: o.ticket ?? null })),
+  level3_due: (d.level3_due ?? []).map((e: J): DashItem => ({ key: `enr-${e.enrollment_id}`, title: toFa(e.employee_name), detail: `${toFa(e.days_since_end)} روز از پایان · ${iso(e.course_name)}`, date: e.end_date, run_id: null, emp_no: e.emp_no })),
   counts: d.counts ?? {},
   last_sync: { excel: syncSummary(d.last_sync?.excel), ifs: syncSummary(d.last_sync?.ifs) },
 });
 const syncSummary = (s: J | null | undefined) => (s ? { at: s.finished_at ?? s.started_at, status: (s.status === "ok" || s.status === "partial" ? "ok" : s.status === "running" ? "ok" : "failed") as "ok" | "failed" } : { at: null, status: "never" as const });
-export const due = (r: J): DueItem[] => (r.items ?? []).map((i: J, n: number): DueItem => ({ id: `${i.kind}-${i.enrollment_id ?? i.run_id ?? n}-${n}`, kind: i.kind, title: i.detail, due_date: null, run_id: i.run_id ?? null, count: 1 }));
+/** Backend `detail` is English prose ("LMS-1: course ended 68 days ago…"); compose a Persian line from its parts instead. */
+const DUE_LABEL: Record<string, string> = { level3_due: "ارزیابی سطح ۳ سررسید شده", deadline_reminder: "مهلت موتیویشن نزدیک است", over3_motivations: "بیش از سقف موتیویشن تأییدنشده", payment_not_started: "پرداخت آغاز نشده" };
+export const due = (r: J): DueItem[] => (r.items ?? []).map((i: J, n: number): DueItem => {
+  const d = String(i.detail ?? ""); const ticket = /\b(LMS-\d+)\b/.exec(d)?.[1]; const days = /(\d+) days? ago/.exec(d)?.[1];
+  const ref = ticket ? iso(ticket) : i.run_id ? `برگزاری ${toFa(i.run_id)}` : "";
+  return { id: `${i.kind}-${i.enrollment_id ?? i.run_id ?? n}-${n}`, kind: i.kind, title: `${DUE_LABEL[i.kind] ?? i.kind}${ref ? ` — ${ref}` : ""}${days ? ` (${toFa(days)} روز از پایان)` : ""}`, due_date: null, run_id: i.run_id ?? null, count: 1 };
+});
 export const settings = (s: J): { settings: AutomationSettings; last_run: { at: string; total: number } | null; loop_enabled: boolean } => ({
   settings: { enabled: !!s.enabled, level3_after_days: s.level3_after_days, reminder_days: s.reminder_days, over3_threshold: s.over3_threshold, letter_number_prefix: s.letter_number_prefix ?? "", settlement_addressee: s.settlement_addressee ?? "", letter_signer_name: s.letter_signer_name ?? "", letter_signer_title: s.letter_signer_title ?? "",
     letter_signer_email: s.letter_signer_email ?? "", letter_signer_phone: s.letter_signer_phone ?? "", company_economic_code: s.company_economic_code ?? "", company_national_id: s.company_national_id ?? "", company_postal_code: s.company_postal_code ?? "", company_address: s.company_address ?? "" },
@@ -98,7 +106,7 @@ export const settings = (s: J): { settings: AutomationSettings; last_run: { at: 
 
 // ---------- candidates / letters / import ----------
 export const candidates = (r: J): CandidateResult => ({
-  candidates: (r.candidates ?? []).map((e: J): Candidate => ({ enrollment_id: e.id, emp_no: e.emp_no, name_fa: e.employee_name_fa || e.employee_name, division: e.division ?? "", ticket: e.ticket, flags: (e.flags ?? []) as CandidateFlag[] })),
+  candidates: (r.candidates ?? []).map((e: J): Candidate => ({ enrollment_id: e.id, emp_no: e.emp_no, name_fa: toFa(e.employee_name_fa || e.employee_name), division: e.division ?? "", ticket: e.ticket, flags: (e.flags ?? []) as CandidateFlag[] })),
   excluded: (r.excluded ?? []).map((x: J) => ({ enrollment_id: x.enrollment_id, ticket: x.ticket, reason: x.reason, conflicting_ticket: x.conflicting_ticket ?? "" })),
   total: r.total ?? 0,
 });
@@ -157,10 +165,12 @@ const SORTS: Record<string, Record<string, string | undefined>> = {
   runs: { start_date: "start_date", end_date: "end_date", status: "status", type: "type" },
   enrollments: { name_fa: undefined, ticket: "ticket", motivation: "motivation", run_name_fa: "course_name" },
   employees: { emp_no: "emp_no", division: "division", status: "status", name_fa: "last_name_en" },
+  courses: { name_fa: "name", category: "category" },
 };
+const TIE: Record<string, string> = { runs: "-id", enrollments: "id", employees: "emp_no", courses: "id" };
 export function sortParam(entity: keyof typeof SORTS, sort?: string): string | undefined {
   if (!sort) return undefined;
   const desc = sort.startsWith("-"); const key = SORTS[entity]![sort.replace(/^-/, "")];
-  return key ? `${desc ? "-" : ""}${key}` : undefined;
+  return key ? `${desc ? "-" : ""}${key},${TIE[entity]}` : undefined; // tie-break on the unique key: equal values must never swap places between fetches
 }
 export const wireUpdate = (b: AutomationSettings): J => ({ ...b });

@@ -6,6 +6,9 @@ TEMPLATES_DIR = str(__import__("pathlib").Path(__file__).resolve().parents[3] / 
 SIGN = {"signer_name": "Sample Sender", "signer_title": "Talent Development Specialist",
         "signer_email": "sender@example.test", "signer_phone": "+98-21-00000000"}
 
+SIGN_FA = {"signer_name_fa": "علی نمونه", "signer_title_fa": "کارشناس توسعه استعدادها",
+           "signer_email": "sender@example.test", "signer_phone": "+98-21-00000000"}
+
 SAMPLES = {
     "course_announcement": {
         "Farsi_Course_Name": "گفتگو در میدان مین", "Farsi_Type": "حضوری", "Day_Farsi": "یکشنبه و دوشنبه",
@@ -20,7 +23,7 @@ SAMPLES = {
         "participants": [
             {"name": "علی نمونه", "national_id": "0000000001", "phone": "09120000001", "email": "ali@example.test"},
             {"name": "سارا آزمایشی", "national_id": "0000000002", "phone": "09120000002", "email": "sara@example.test"}],
-        **SIGN},
+        **SIGN_FA},
     "settlement_letter": {
         "addressee": "Finance Team", "supplier": "Example Supplier Co.", "invoice_no": "INV-0001",
         "purpose": "Example Course (EX100)", "mtc_no": "MTC-000001", "start_date": date(2024, 12, 6),

@@ -17,7 +17,9 @@ const api = makeApi(() => bus.onUnauthorized());
 const qc = new QueryClient({ defaultOptions: { queries: { retry: false, refetchOnWindowFocus: false, staleTime: 15_000 } } });
 bus.onUnauthorized = () => { const was = authFlag.authed; if (was) authFlag.expired = true; qc.clear(); window.dispatchEvent(new Event("tms:unauthorized")); /* sign-out state first, so the router never bounces a public route to "/" */ toLogin(was); };
 
-createRoot(document.getElementById("root")!).render(
+// Start the (single, variable) font early and hold the first paint briefly for it, so text never re-flows after load.
+const fontReady = Promise.race([document.fonts?.load('400 1em Vazirmatn').then(() => document.fonts.load('700 1em Vazirmatn')) ?? Promise.resolve(), new Promise((r) => setTimeout(r, 2500))]);
+void fontReady.then(() => createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={qc}>
       <ApiProvider api={api}>
@@ -30,7 +32,7 @@ createRoot(document.getElementById("root")!).render(
       </ApiProvider>
     </QueryClientProvider>
   </React.StrictMode>,
-);
+));
 
 import { useEffect } from "react";
 import { useAuth } from "./app-context";

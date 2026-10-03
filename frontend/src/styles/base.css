@@ -1,5 +1,12 @@
-@import "vazirmatn/Vazirmatn-font-face.css";
 @import "./tokens.generated.css";
+
+/* ONE variable font file (111 KB) instead of five static weights fetched lazily as each weight first appears:
+   the lazy weights made text re-flow ("page jumps") seconds after load on a slow link. block = never paint the fallback. */
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("vazirmatn/fonts/webfonts/Vazirmatn[wght].woff2") format("woff2");
+  font-weight: 100 900; font-style: normal; font-display: block;
+}
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }

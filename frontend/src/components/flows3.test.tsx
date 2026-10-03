@@ -74,12 +74,12 @@ describe("bulk motivation (M1)", () => {
   it("marks selected rows with one confirm and one undo", async () => {
     const { ui } = await setup("hr");
     ui(<EnrollmentsTable runId={4} showRun={false} />);
-    await screen.findAllByRole("combobox", { name: /^انگیزه‌نامه / });
-    const rows = () => screen.getAllByRole("combobox", { name: /^انگیزه‌نامه / }) as HTMLSelectElement[];
+    await screen.findAllByRole("combobox", { name: /^موتیویشن / });
+    const rows = () => screen.getAllByRole("combobox", { name: /^موتیویشن / }) as HTMLSelectElement[];
     const before = rows().slice(0, 2).map((s) => s.value);
     const boxes = screen.getAllByRole("checkbox", { name: /^انتخاب (?!همهٔ)/ });
     await userEvent.click(boxes[0]!); await userEvent.click(boxes[1]!);
-    await userEvent.click(screen.getByRole("button", { name: /رد انگیزه‌نامه/ }));
+    await userEvent.click(screen.getByRole("button", { name: /رد موتیویشن/ }));
     await userEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: /ثبت «خیر» برای همه/ }));
     await waitFor(() => expect(rows().slice(0, 2).map((s) => s.value)).toEqual(["no", "no"]));
     await userEvent.click(await screen.findByRole("button", { name: "برگردان" }));

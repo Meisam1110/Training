@@ -50,6 +50,14 @@ class UserCreate(Strict):
     password: str = Field(min_length=1, max_length=256)
     role: Literal["admin", "hr", "viewer"] = "viewer"
     display_name: str = Field("", max_length=128)
+    email: str = Field("", max_length=200)
+
+    @field_validator("email")
+    @classmethod
+    def _email(cls, v):
+        if v and not EMAIL_RE.match(v):
+            raise ValueError("نشانی ایمیل نامعتبر")
+        return v.lower()
 
 
 class UserPatch(Strict):
@@ -57,6 +65,14 @@ class UserPatch(Strict):
     role: Literal["admin", "hr", "viewer"] | None = None
     password: str | None = Field(None, min_length=1, max_length=256)
     display_name: str | None = Field(None, max_length=128)
+    email: str | None = Field(None, max_length=200)
+
+    @field_validator("email")
+    @classmethod
+    def _email(cls, v):
+        if v and not EMAIL_RE.match(v):
+            raise ValueError("نشانی ایمیل نامعتبر")
+        return v.lower() if v else v
 
 
 class InstituteIn(Strict):
@@ -190,6 +206,7 @@ class BulkIn(Strict):
 class LetterIn(Strict):
     kind: LetterKindT
     run_id: Id | None = None
+    template_id: Id | None = None            # use this saved template's subject/body for the e-mail text of the letter
     enrollment_ids: list[Id] = Field(default_factory=list, max_length=500)
     lang: Literal["fa", "en", "both"] = "both"
     extra: dict[str, Any] = Field(default_factory=dict)   # invoice_no, supplier, addressee, purpose...
@@ -207,6 +224,9 @@ class LetterIn(Strict):
 
 class EmailSendIn(Strict):
     letter_id: Id | None = None
+    template_id: Id | None = None            # a saved message template (rich text); fields = context + `fields`
+    run_id: Id | None = None
+    enrollment_id: Id | None = None
     template: LetterKindT | None = None
     fields: dict[str, Any] = Field(default_factory=dict)
     lang: Literal["fa", "en", "both"] = "both"
@@ -231,8 +251,8 @@ class EmailSendIn(Strict):
 
     @model_validator(mode="after")
     def _one_source(self):
-        if bool(self.letter_id) == bool(self.template):
-            raise ValueError("دقیقاً یکی از letter_id یا template لازم است")
+        if sum(bool(x) for x in (self.letter_id, self.template, self.template_id)) != 1:
+            raise ValueError("دقیقاً یکی از letter_id، template یا template_id لازم است")
         return self
 
 
@@ -268,3 +288,75 @@ class AutomationSettingsIn(Strict):
 
 def to_latin_digits(s: str) -> str:
     return s.translate(_PERSIAN)
+
+
+TemplateKindT = Literal["course_announcement", "institute_letter", "settlement_letter", "level3_request", "level3_manager_check",
+                        "line_manager_approval", "email_announcement", "email_reminder", "email_level3", "email_manager_check",
+                        "email_institute", "email_settlement", "email_generic"]
+
+
+class TemplateIn(Strict):
+    kind: TemplateKindT
+    name: str = Field(min_length=1, max_length=200)
+    lang: Literal["fa", "en", "both"] = "both"
+    subject: str = Field("", max_length=300)
+    body_html: str = Field("", max_length=100_000)
+
+
+class TemplatePatch(Strict):
+    name: str | None = Field(None, min_length=1, max_length=200)
+    lang: Literal["fa", "en", "both"] | None = None
+    subject: str | None = Field(None, max_length=300)
+    body_html: str | None = Field(None, max_length=100_000)
+
+
+class TemplateDraft(Strict):
+    kind: TemplateKindT
+    subject: str = Field("", max_length=300)
+    body_html: str = Field("", max_length=100_000)
+
+
+class TemplatePreviewIn(Strict):
+    id: Id | None = None
+    template: TemplateDraft | None = None
+    run_id: Id | None = None
+    enrollment_id: Id | None = None
+
+    @model_validator(mode="after")
+    def _one(self):
+        if bool(self.id) == bool(self.template):
+            raise ValueError("دقیقاً یکی از id یا template لازم است")
+        return self
+
+
+class SendTestIn(Strict):
+    to: str = Field(max_length=200)
+
+    @field_validator("to")
+    @classmethod
+    def _to(cls, v):
+        if not EMAIL_RE.match(v):
+            raise ValueError("نشانی ایمیل نامعتبر")
+        return v.lower()
+
+
+class WidgetPos(Strict):
+    id: str = Field(min_length=1, max_length=64)
+    x: int = Field(ge=0, le=11)
+    y: int = Field(ge=0, le=500)
+    w: int = Field(ge=1, le=12)
+    h: int = Field(ge=1, le=20)
+    config: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("config")
+    @classmethod
+    def _cfg(cls, v):
+        import json
+        if len(json.dumps(v, default=str)) > 2000:
+            raise ValueError("config بیش از حد بزرگ است")
+        return v
+
+
+class LayoutIn(Strict):
+    version: int | None = Field(None, ge=0, le=10**9)       # the revision the client last saw; informational (the server increments)
+    widgets: list[WidgetPos] = Field(max_length=40)

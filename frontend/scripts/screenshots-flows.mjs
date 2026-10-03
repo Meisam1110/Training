@@ -24,7 +24,7 @@ try {
     await p.click(".step:nth-child(1) .step__btn"); await p.click('button[aria-label^="انتخاب تاریخ از تقویم: شروع"]'); await p.waitForTimeout(300);
     await p.screenshot({ path: `screenshots/flow-datepicker-${scheme}-${w}.png` });
     await p.goto(`${base}/enrollments`); await p.waitForTimeout(1200);
-    await p.selectOption('select[aria-label^="انگیزه‌نامه"] >> nth=0', "no"); await p.waitForTimeout(700);
+    await p.selectOption('select[aria-label^="موتیویشن"] >> nth=0', "no"); await p.waitForTimeout(700);
     await p.screenshot({ path: `screenshots/flow-undo-toast-${scheme}-${w}.png` });
     const undo = p.locator("text=برگردان").first(); log.push(`undo visible ${w}: ${await undo.isVisible()}`);
     if (w === 360) { await p.click('button[aria-label="باز کردن منو"]'); await p.waitForTimeout(400); await p.screenshot({ path: `screenshots/flow-drawer-${scheme}-${w}.png` }); }

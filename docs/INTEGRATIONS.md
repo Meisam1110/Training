@@ -86,7 +86,7 @@ payment-not-started once per run when the run started, the enrollment's motivati
 `split_invoice(total, n, places=0)` (Decimal, shares sum exactly; remainder to the first attendees) and `invoice_total(unit, motivations)`.
 
 ## 6. Letters (`app/documents`)
-See `docs/TEMPLATES.md`. `DocxLetterRenderer(templates_dir)`: `render(kind, fields, lang)` -> `RenderedLetter` (docx bytes, e-mail HTML body, single-line subject, safe filename), `required_fields(kind, lang)`.
+See `docs/TEMPLATES.md` (Persian signatures, field catalog `field_catalog()`, `render_custom()` for user templates, `DEFAULT_TEMPLATES`). `DocxLetterRenderer(templates_dir)`: `render(kind, fields, lang)` -> `RenderedLetter` (docx bytes, e-mail HTML body, single-line subject, safe filename), `required_fields(kind, lang)`.
 
 ## 7. What was verified here vs not
 Executed: full pytest suite (see final report for counts/coverage); all six letters rendered to .docx and converted to PDF with LibreOffice 24.2 (Writer installed for the check) and inspected visually; the e-mail HTML was string-checked only (no mail client/Outlook rendering was possible).

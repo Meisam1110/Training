@@ -43,7 +43,7 @@ export function DataTable<T>({ caption, columns, data, getRowId, loading, error,
 
   return (
     <>
-      <div className="table-wrap" ref={scroller} tabIndex={0} role="region" aria-label={caption} style={maxHeight ? ({ ["--table-max" as string]: `${maxHeight}px` }) : undefined} aria-busy={loading || undefined}>
+      <div className="table-wrap" ref={scroller} tabIndex={0} role="region" aria-label={caption} style={maxHeight ? ({ ["--table-max" as string]: `${maxHeight}px`, ...(loading && !rows.length ? { minBlockSize: maxHeight } : {}) }) : undefined} aria-busy={loading || undefined}>
         <table className="table">
           <caption className="sr-only">{caption}</caption>
           <thead>

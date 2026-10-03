@@ -1,0 +1,165 @@
+{
+ "target": "mockprod",
+ "role": "admin",
+ "theme": "light",
+ "dialog": {
+  "focusInside": true,
+  "returnedTo": "دورهٔ جدید"
+ },
+ "out": [
+  {
+   "route": "/",
+   "interactive": 53,
+   "tabStops": 42,
+   "reachedPct": 79,
+   "noRing": [],
+   "noRingCount": 0,
+   "offscreenAfterFocus": 0,
+   "firstStops": [
+    "مدیریت زمان",
+    "ادامهٔ برنامه‌ریزی: مدیریت ز",
+    "رهبری تیم‌های چابک"
+   ]
+  },
+  {
+   "route": "/runs",
+   "interactive": 33,
+   "tabStops": 22,
+   "reachedPct": 67,
+   "noRing": [],
+   "noRingCount": 0,
+   "offscreenAfterFocus": 1,
+   "firstStops": [
+    "دورهٔ جدید",
+    ":r2:",
+    "همهبرنامه‌ریزی‌شدهاطلاع‌رسان"
+   ]
+  },
+  {
+   "route": "/runs/1",
+   "interactive": 35,
+   "tabStops": 22,
+   "reachedPct": 63,
+   "noRing": [],
+   "noRingCount": 0,
+   "offscreenAfterFocus": 0,
+   "firstStops": [
+    "۲انتخاب کاندیدادر انتظار",
+    "۳اطلاع‌رسانیدر انتظار",
+    "۴جمع‌آوری موتیویشندر انتظار"
+   ]
+  },
+  {
+   "route": "/runs/1/candidates",
+   "interactive": 26,
+   "tabStops": 26,
+   "reachedPct": 100,
+   "noRing": [],
+   "noRingCount": 0,
+   "offscreenAfterFocus": 0,
+   "firstStops": [
+    "بازگشت به دوره",
+    ":rh:",
+    "on"
+   ]
+  },
+  {
+   "route": "/enrollments",
+   "interactive": 171,
+   "tabStops": 120,
+   "reachedPct": 70,
+   "noRing": [],
+   "noRingCount": 0,
+   "offscreenAfterFocus": 1,
+   "firstStops": [
+    ":rj:",
+    "همهبلهخیرنامشخص",
+    "فهرست ثبت‌نام‌ها"
+   ]
+  },
+  {
+   "route": "/letters",
+   "interactive": 22,
+   "tabStops": 11,
+   "reachedPct": 50,
+   "noRing": [],
+   "noRingCount": 0,
+   "offscreenAfterFocus": 0,
+   "firstStops": [
+    "اطلاعیهٔ دورهنامهٔ مؤسسهنامه",
+    "انتخاب دوره…مدیریت زمان — ۱۴",
+    "فارسی و انگلیسیفارسیEnglish"
+   ]
+  },
+  {
+   "route": "/employees",
+   "interactive": 38,
+   "tabStops": 92,
+   "reachedPct": 242,
+   "noRing": [],
+   "noRingCount": 0,
+   "offscreenAfterFocus": 0,
+   "firstStops": [
+    ":rq:",
+    "همهفعالغیرفعال",
+    "فهرست کارمندان"
+   ]
+  },
+  {
+   "route": "/connectors",
+   "interactive": 44,
+   "tabStops": 33,
+   "reachedPct": 75,
+   "noRing": [],
+   "noRingCount": 0,
+   "offscreenAfterFocus": 0,
+   "firstStops": [
+    "on",
+    "\\\\fileserver\\training\\IDP-ex",
+    "/data/incoming"
+   ]
+  },
+  {
+   "route": "/automation",
+   "interactive": 47,
+   "tabStops": 47,
+   "reachedPct": 100,
+   "noRing": [],
+   "noRingCount": 0,
+   "offscreenAfterFocus": 0,
+   "firstStops": [
+    "اجرای همین حالا…",
+    "رضا حسینی — مذاکرهٔ مؤثر · ۷",
+    "رضا یزدانی — مذاکرهٔ مؤثر · "
+   ]
+  },
+  {
+   "route": "/import-export",
+   "interactive": 17,
+   "tabStops": 4,
+   "reachedPct": 24,
+   "noRing": [],
+   "noRingCount": 0,
+   "offscreenAfterFocus": 0,
+   "firstStops": [
+    "برون‌بری اکسل قدیمی…",
+    "انتخاب فایل",
+    "انتخاب فایل"
+   ]
+  },
+  {
+   "route": "/admin",
+   "interactive": 28,
+   "tabStops": 17,
+   "reachedPct": 61,
+   "noRing": [],
+   "noRingCount": 0,
+   "offscreenAfterFocus": 0,
+   "firstStops": [
+    "کاربران",
+    "گزارش ممیزی",
+    "کاربر جدید"
+   ]
+  }
+ ]
+}

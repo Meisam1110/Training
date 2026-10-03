@@ -205,6 +205,52 @@ def filter_language(doc, lang: str) -> None:
             _remove(el)
 
 
+SIGNATURE_TOKEN = "[[SIGNATURE_IMAGE]]"
+MAX_SIGNATURE_BYTES = 1024 * 1024
+
+
+def validated_image(data: Any) -> bytes | None:
+    """bytes / base64 string / data-URI -> verified PNG or JPEG bytes (<= 1 MB); None when absent."""
+    if data in (None, "", b""):
+        return None
+    import base64
+    import binascii
+    if isinstance(data, str):
+        raw = data.split(",", 1)[1] if data.startswith("data:") and "," in data else data
+        try:
+            data = base64.b64decode(raw, validate=True)
+        except (binascii.Error, ValueError):
+            raise ValueError("signature_image must be PNG/JPEG bytes or base64") from None
+    if not isinstance(data, (bytes, bytearray)) or len(data) > MAX_SIGNATURE_BYTES \
+            or not (bytes(data[:8]) == b"\x89PNG\r\n\x1a\n" or bytes(data[:3]) == b"\xff\xd8\xff"):
+        raise ValueError("signature_image must be a PNG or JPEG of at most 1 MB")
+    return bytes(data)
+
+
+def apply_signature_image(doc, image: bytes | None, width_cm: float = 3.5) -> None:
+    """Replace the ``[[SIGNATURE_IMAGE]]`` paragraph by the picture, or drop it when there is none."""
+    import io
+
+    from docx.shared import Cm
+    from docx.text.paragraph import Paragraph
+    for root in story_roots(doc):
+        for p in list(all_paragraphs(root)):
+            if paragraph_text(p).strip() != SIGNATURE_TOKEN:
+                continue
+            parent = p.getparent()
+            if image:
+                para = Paragraph(p, doc._body)
+                for r in para.runs:
+                    r.text = ""
+                run = para.runs[0] if para.runs else para.add_run()
+                run.add_picture(io.BytesIO(image), width=Cm(width_cm))
+            elif parent.tag == qn("w:tc") and len(parent.findall(qn("w:p"))) == 1:
+                for r in _runs(p):
+                    Run(r, p).text = ""
+            else:
+                _remove(p)
+
+
 def leftover_placeholders(doc) -> list[str]:
     left = []
     for root in story_roots(doc):

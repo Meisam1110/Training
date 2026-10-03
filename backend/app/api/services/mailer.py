@@ -52,9 +52,18 @@ def send(db: Session, settings: Settings, user: User | None, body: EmailSendIn, 
         letter = db.get(Letter, body.letter_id)
         if not letter:
             raise not_found("نامه")
+    tpl_extra: dict = {}
     if letter:
         subject, html = body.subject or letter.subject, letter.html_body
         attachments = [(letter.filename, letters.read_letter_file(settings, letter), DOCX)]
+    elif body.template_id:
+        from app.api.services import templates as tsvc
+        tpl = tsvc.load(db, body.template_id)
+        ctx = tsvc.context_fields(db, settings, tpl.kind, body.run_id, body.enrollment_id)[0] if (body.run_id or body.enrollment_id) else {}
+        fields = {**ctx, **body.fields}
+        res = tsvc.render_strict(tpl, fields)
+        subject, html, attachments = body.subject or res["subject"], res["html"], []
+        tpl_extra = {"template_id": tpl.id, "template_version": tpl.version, "run": body.run_id, "enr": body.enrollment_id}
     else:
         r = letters.render(letters.get_renderer(settings), body.template, body.fields, body.lang)
         subject, html = body.subject or r.subject, r.html_body
@@ -63,7 +72,7 @@ def send(db: Session, settings: Settings, user: User | None, body: EmailSendIn, 
         raise validation("موضوع ایمیل لازم است", subject="الزامی است")
     # the key is bound to the WHOLE request: same key + different subject/cc/recipients/content -> 409, never a silent replay
     rh = _hash(letter=body.letter_id, template=body.template, fields=body.fields if not letter else None, lang=body.lang,
-               subject=subject, to=sorted(body.recipients), cc=sorted(body.cc), channel=body.channel)
+               subject=subject, to=sorted(body.recipients), cc=sorted(body.cc), channel=body.channel, **tpl_extra)
     return deliver(db, settings, user, key=body.idempotency_key or header_key or f"auto-{uuid.uuid4().hex}", request_hash=rh,
                    letter=letter, subject=subject, html=html, attachments=attachments, recipients=body.recipients, cc=body.cc,
                    dry_run=body.dry_run, channel=body.channel, ip=ip)

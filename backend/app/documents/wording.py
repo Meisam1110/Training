@@ -24,13 +24,13 @@ DOCS: dict[str, dict[str, list[tuple]]] = {
     "course_announcement": {
         FA: [
             ("banner", "banner_engagement_fa.png"),
-            ("title", "ثبت نام در دوره آموزشی | {{Farsi_Course_Name}} ({{Farsi_Type}})"),
+            ("title", "ثبت‌نام در دوره آموزشی | {{Farsi_Course_Name}} ({{Farsi_Type}})"),
             ("p", "همکاران گرامی،"),
             ("p", "با سلام،"),
             ("p", "خرسندیم به اطلاع برسانیم دوره آموزشی {{Farsi_Type}} «{{Farsi_Course_Name}}» به زودی توسط تیم "
                   "تعلق خاطر کارکنان برگزار خواهد شد."),
             ("p", "از آنجایی که در فرآیند نیازسنجی برای حضور در این دوره درخواست داده‌اید، خواهشمندیم حداکثر تا "
-                  "پایان روز {{deadline_farsi|fa}} نسبت به ثبت و تکمیل فرم درخواست (Motivation Form) در پورتال LMS "
+                  "پایان روز {{deadline_farsi|fa}} نسبت به ثبت و تکمیل فرم موتیویشن (Motivation Form) در پورتال LMS "
                   "اقدام نمایید."),
             ("kv", [("عنوان دوره", "{{Farsi_Course_Name}}"), ("مدت دوره", "{{Time_Farsi|fa}}"),
                     ("تاریخ شروع", "{{jStart_Date|fa}} ({{Date_Horoof}})"),
@@ -38,14 +38,14 @@ DOCS: dict[str, dict[str, list[tuple]]] = {
                     ("تعداد جلسات", "{{Sessions_Count|fa}} جلسه")]),
             ("p", "برای اطلاعات بیشتر از لینک‌های زیر استفاده نمایید:"),
             ("link", "محتوای دوره آموزشی", "{{link}}"),
-            ("link", "راهنمای ثبت درخواست", "{{guide_link}}"),
+            ("link", "راهنمای ثبت موتیویشن", "{{guide_link}}"),
             ("p", "نکات قابل توجه:"),
-            ("bullets", ["قبل از ثبت درخواست، محتوای دوره را بررسی نمایید که مطابق با نیاز آموزشی شما باشد و با "
+            ("bullets", ["قبل از ثبت موتیویشن، محتوای دوره را بررسی نمایید که مطابق با نیاز آموزشی شما باشد و با "
                          "مدیر مستقیم خود در مورد انتظاراتی که پس از گذراندن این دوره خواهند داشت صحبت نمایید.",
                          "حضور در دوره‌های آموزشی شامل پرداخت اضافه‌کار نمی‌شود؛ در صورت عدم حضور در شرکت در "
-                         "ساعات اداری، شما می‌توانید به جای ثبت مرخصی در سیستم محاسبه کارکرد، «ماموریت ساعتی "
+                         "ساعات اداری، شما می‌توانید به جای ثبت مرخصی در سیستم محاسبه کارکرد، «مأموریت ساعتی "
                          "درون‌شهری» ثبت نمایید."]),
-            ("sign", ["با سپاس", "تیم تعلق خاطر کارکنان", "منابع انسانی"]),
+            ("sign", ["با سپاس", "[[SIGNATURE_IMAGE]]", "{{signer_name_fa}}", "{{signer_title_fa}}", "{{unit_fa}}", "{{department_fa}}"]),
         ],
         EN: [
             ("banner", "banner_engagement_en.png"),
@@ -91,7 +91,8 @@ DOCS: dict[str, dict[str, list[tuple]]] = {
             ("p", "مشخصات اقتصادی شرکت خدمات ارتباطی ایرانسل به شرح زیر است:"),
             ("bullets", ["کد اقتصادی: {{company_economic_code|fa}}", "شناسه ملی: {{company_national_id|fa}}",
                          "کد پستی: {{company_postal_code|fa}}", "آدرس دفتر مرکزی: {{company_address}}"]),
-            ("sign", ["با سپاس", "{{signer_name}}", "{{signer_title}}", "{{signer_phone|ltr}}", "{{signer_email|ltr}}"]),
+            ("sign_formal", ["با احترام", "[[SIGNATURE_IMAGE]]", "{{signer_name_fa}}", "{{signer_title_fa}}", "{{unit_fa}}",
+                             "{{department_fa}}", "{{signer_phone|ltr}}", "{{signer_email|ltr}}"]),
         ],
     },
     "settlement_letter": {
@@ -122,9 +123,9 @@ DOCS: dict[str, dict[str, list[tuple]]] = {
             ("link", "{{link}}", "{{link}}"),
             ("p", "بر روی Submit Evaluation Level 3 کلیک کنید و سپس فرم مربوطه را تکمیل نمایید و پس از تکمیل، "
                   "مجدداً بر روی Submit Evaluation Level 3 کلیک نمایید."),
-            ("image", "howto_ticket.png", 9.0),
-            ("image", "howto_level3_form.png", 7.0),
-            ("sign", ["با احترام", "تیم توسعه استعدادها", "منابع انسانی"]),
+            ("image", "howto_ticket.png", 6.5),
+            ("image", "howto_level3_form.png", 4.2),
+            ("sign", ["با احترام", "[[SIGNATURE_IMAGE]]", "{{signer_name_fa}}", "{{signer_title_fa}}", "{{unit_fa}}", "{{department_fa}}"]),
         ],
         EN: [
             ("banner", "banner_talent_en.png"),
@@ -154,7 +155,7 @@ DOCS: dict[str, dict[str, list[tuple]]] = {
             ("image", "howto_manager_agree.png", 9.0),
             ("note", "در صورت عدم موافقت با نظر کارمند که در صفحه قبل درج شده بود، می‌توانید با انتخاب گزینه "
                      "«خیر» نظر خود را جایگزین نظر ایشان نمایید."),
-            ("sign", ["با احترام", "تیم توسعه استعدادها", "منابع انسانی"]),
+            ("sign", ["با احترام", "[[SIGNATURE_IMAGE]]", "{{signer_name_fa}}", "{{signer_title_fa}}", "{{unit_fa}}", "{{department_fa}}"]),
         ],
         EN: [
             ("banner", "banner_talent_en.png"),
@@ -184,7 +185,7 @@ DOCS: dict[str, dict[str, list[tuple]]] = {
 }
 
 SUBJECTS = {
-    "course_announcement": {FA: "ثبت نام در دوره آموزشی | {{Farsi_Course_Name}} ({{Farsi_Type}})",
+    "course_announcement": {FA: "ثبت‌نام در دوره آموزشی | {{Farsi_Course_Name}} ({{Farsi_Type}})",
                             EN: "Training Course Registration | {{Course_Name}} ({{Type}})"},
     "institute_letter": {FA: "معرفی شرکت‌کنندگان دوره {{Course_Name}} - نامه شماره {{Letter_No}}"},
     "settlement_letter": {EN: "Invoice approval request - {{supplier}} - {{invoice_no}}"},

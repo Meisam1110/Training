@@ -13,12 +13,12 @@ describe("wire: backend -> UI mapping (captured payloads)", () => {
   });
   it("enrollment: tri-state, attendance and unassigned run", () => {
     const e = W.enrollment(samples.enrollments.items[0]!);
-    expect(e).toMatchObject({ id: 1, run_id: 1, emp_no: "D00001", name_fa: "رضا نووا1", motivation: "yes", registration: "pending", attendance: "attended", ticket: "LMS-700000" });
+    expect(e).toMatchObject({ id: 1, run_id: 1, emp_no: "D00001", name_fa: "رضا نووا۱", motivation: "yes", registration: "pending", attendance: "attended", ticket: "LMS-700000" });
     expect(W.enrollment({ ...samples.enrollments.items[0]!, run_id: null, attendance: "-" })).toMatchObject({ run_id: null, attendance: "pending" });
   });
   it("employee: masked values pass through untouched; Active -> active", () => {
     const e = W.employee(samples.employees.items[0]!);
-    expect(e).toMatchObject({ emp_no: "D00001", name_fa: "رضا نووا1", status: "active", job_title: "Specialist" });
+    expect(e).toMatchObject({ emp_no: "D00001", name_fa: "رضا نووا۱", status: "active", job_title: "Specialist" });
     expect(e.national_code).toMatch(/^\*+\d+$/); expect(e.mobile).toMatch(/^\*+\d+$/);
     expect(W.employee(samples.employee_revealed).national_code).toMatch(/^\d{10}$/);
   });
@@ -39,6 +39,7 @@ describe("wire: backend -> UI mapping (captured payloads)", () => {
   });
   it("due items, settings, audit, users, courses, candidates", () => {
     expect(W.due(samples.due)[0]).toMatchObject({ kind: "level3_due", run_id: 1 });
+    expect(W.due(samples.due)[0]!.title).toMatch(/^ارزیابی سطح ۳ سررسید شده — .*LMS-\d+.*\([۰-۹]+ روز از پایان\)$/);
     const s = W.settings(samples.settings);
     expect(s.settings).toMatchObject({ enabled: true, level3_after_days: 60, over3_threshold: 3 });
     expect(Object.keys(s.settings)).not.toContain("interval_s"); // PUT is extra=forbid: only editable keys
@@ -80,9 +81,9 @@ describe("wire: UI -> backend request bodies (all schemas are extra=forbid)", ()
     expect(W.userBody({ username: "u1", full_name: "نام", role: "hr", password: "x" })).toEqual({ username: "u1", password: "x", role: "hr", display_name: "نام" });
   });
   it("sort keys are translated or dropped (backend answers 422 to unknown sort keys)", () => {
-    expect(W.sortParam("runs", "-start_date")).toBe("-start_date");
+    expect(W.sortParam("runs", "-start_date")).toBe("-start_date,-id"); // tie-break on the unique key
     expect(W.sortParam("runs", "course_name_fa")).toBeUndefined();
-    expect(W.sortParam("employees", "name_fa")).toBe("last_name_en");
+    expect(W.sortParam("employees", "name_fa")).toBe("last_name_en,emp_no");
   });
   it("missing template fields (422 fields.fields) become per-field problems", () => {
     expect(W.missingFromFields({ fields: "start_date_greg, total, rows" })).toEqual({ start_date_greg: "مقدار «start_date_greg» خالی است.", total: "مقدار «total» خالی است.", rows: "مقدار «rows» خالی است." });

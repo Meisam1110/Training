@@ -38,29 +38,40 @@ describe("enrollments inline edit", () => {
   it("updates optimistically and offers undo", async () => {
     const { ui } = await setup("hr");
     ui(<EnrollmentsTable runId={4} showRun={false} />);
-    const sel = (await screen.findAllByRole("combobox", { name: /^انگیزه‌نامه / }))[0]! as HTMLSelectElement;
+    const sel = (await screen.findAllByRole("combobox", { name: /^موتیویشن / }))[0]! as HTMLSelectElement;
     const before = sel.value; const next = before === "no" ? "yes" : "no";
     await userEvent.selectOptions(sel, next);
     expect(sel.value).toBe(next);
     const undo = await screen.findByRole("button", { name: "برگردان" });
     await userEvent.click(undo);
-    await waitFor(() => expect((screen.getAllByRole("combobox", { name: /^انگیزه‌نامه / })[0] as HTMLSelectElement).value).toBe(before));
+    await waitFor(() => expect((screen.getAllByRole("combobox", { name: /^موتیویشن / })[0] as HTMLSelectElement).value).toBe(before));
+  });
+  it("does not refetch (and so cannot re-order) the list after an inline edit", async () => {
+    const { ui, calls } = await setup("hr");
+    ui(<EnrollmentsTable runId={4} showRun={false} />);
+    const sel = (await screen.findAllByRole("combobox", { name: /^موتیویشن / }))[0]! as HTMLSelectElement;
+    const listCalls = () => calls.filter((c) => c.method === "GET" && c.url.includes("/enrollments")).length;
+    const before = listCalls();
+    await userEvent.selectOptions(sel, sel.value === "no" ? "yes" : "no");
+    await screen.findByRole("button", { name: "برگردان" });
+    await new Promise((r) => setTimeout(r, 150));
+    expect(listCalls()).toBe(before);
   });
   it("rolls back and shows an error toast when the server refuses", async () => {
     const { ui, api } = await setup("hr");
     vi.spyOn(api, "patchEnrollment").mockRejectedValueOnce(new Error("سرور رد کرد"));
     ui(<EnrollmentsTable runId={4} showRun={false} />);
-    const sel = (await screen.findAllByRole("combobox", { name: /^انگیزه‌نامه / }))[0]! as HTMLSelectElement;
+    const sel = (await screen.findAllByRole("combobox", { name: /^موتیویشن / }))[0]! as HTMLSelectElement;
     const before = sel.value;
     await userEvent.selectOptions(sel, before === "no" ? "yes" : "no");
     expect(await screen.findByText(/مقدار قبلی برگردانده شد/)).toBeInTheDocument();
-    await waitFor(() => expect((screen.getAllByRole("combobox", { name: /^انگیزه‌نامه / })[0] as HTMLSelectElement).value).toBe(before));
+    await waitFor(() => expect((screen.getAllByRole("combobox", { name: /^موتیویشن / })[0] as HTMLSelectElement).value).toBe(before));
   });
   it("viewer sees read-only chips, no inputs", async () => {
     const { ui } = await setup("viewer");
     ui(<EnrollmentsTable runId={4} showRun={false} />);
     await screen.findAllByText("بله");
-    expect(screen.queryAllByRole("combobox", { name: /^انگیزه‌نامه / })).toHaveLength(0);
+    expect(screen.queryAllByRole("combobox", { name: /^موتیویشن / })).toHaveLength(0);
   });
 });
 
@@ -68,10 +79,10 @@ describe("role-aware actions", () => {
   it("viewer does not get the create-run button; hr does", async () => {
     const v = await setup("viewer"); const r1 = v.ui(<RunsScreen />);
     await screen.findAllByText("مدیریت زمان");
-    expect(screen.queryByRole("button", { name: /دورهٔ جدید/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /برگزاری جدید/ })).not.toBeInTheDocument();
     r1.unmount();
     const h = await setup("hr"); h.ui(<RunsScreen />);
-    expect(await screen.findByRole("button", { name: /دورهٔ جدید/ })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /برگزاری جدید/ })).toBeInTheDocument();
   });
 });
 

@@ -33,7 +33,7 @@ def _tmpdir(settings: Settings) -> Path:
 def _save_upload(f: UploadFile, settings: Settings) -> Path:
     name = (f.filename or "").lower()
     if not name.endswith(".xlsx"):
-        raise validation("فقط فایل xlsx پذیرفته می‌شود", file="فقط xlsx")
+        raise validation("انتقال اطلاعات: فقط فایل xlsx پذیرفته می‌شود", file="فقط xlsx")
     path = _tmpdir(settings) / f"up-{uuid.uuid4().hex}.xlsx"
     size, head = 0, b""
     with open(path, "wb") as out:
@@ -43,11 +43,11 @@ def _save_upload(f: UploadFile, settings: Settings) -> Path:
             if size > settings.max_upload_bytes:
                 out.close()
                 path.unlink(missing_ok=True)
-                raise validation("حجم فایل بیش از حد مجاز است", file="حجم زیاد")
+                raise validation("انتقال اطلاعات: حجم فایل بیش از حد مجاز است", file="حجم زیاد")
             out.write(chunk)
     if size == 0 or head[:2] != b"PK":
         path.unlink(missing_ok=True)
-        raise validation("فایل xlsx معتبر نیست", file="xlsx نیست")
+        raise validation("انتقال اطلاعات: فایل xlsx معتبر نیست", file="xlsx نیست")
     try:
         check_xlsx(path, settings)
     except Exception:
@@ -64,15 +64,15 @@ def check_xlsx(path: Path, settings: Settings) -> None:
             infos = z.infolist()
             names = {i.filename for i in infos}
             if "[Content_Types].xml" not in names or "xl/workbook.xml" not in names:
-                raise validation("فایل xlsx معتبر نیست", file="کارپوشهٔ xlsx معتبر نیست")
+                raise validation("انتقال اطلاعات: فایل xlsx معتبر نیست", file="کارپوشهٔ xlsx معتبر نیست")
             if len(infos) > 2000 or any(i.filename.startswith(("/", "..")) or ".." in i.filename.split("/") for i in infos):
-                raise validation("ساختار فایل xlsx مجاز نیست", file="ساختار بایگانی نامعتبر است")
+                raise validation("انتقال اطلاعات: ساختار فایل xlsx مجاز نیست", file="ساختار بایگانی نامعتبر است")
             total = sum(i.file_size for i in infos)
             comp = max(sum(i.compress_size for i in infos), 1)
             if total > settings.max_xlsx_uncompressed_bytes or total / comp > settings.max_xlsx_ratio:
-                raise validation("حجم بازشدهٔ فایل xlsx از سقف مجاز بیشتر است", file="سقف حجم بازشده یا نسبت فشرده‌سازی")
+                raise validation("انتقال اطلاعات: حجم بازشدهٔ فایل xlsx از سقف مجاز بیشتر است", file="سقف حجم بازشده یا نسبت فشرده‌سازی")
     except zipfile.BadZipFile:
-        raise validation("فایل xlsx معتبر نیست", file="بایگانی خراب است") from None
+        raise validation("انتقال اطلاعات: فایل xlsx معتبر نیست", file="بایگانی خراب است") from None
 
 
 def _finish(request: Request, response: Response, db: Session, user: User, run, action: str):
@@ -130,7 +130,7 @@ def export_legacy(request: Request, include_pii: int = Query(0, ge=0, le=1), db:
     """National code and mobile are left blank unless ``include_pii=1`` (admin only): a bulk PII dump is a deliberate,
     audited admin action, not one click for every HR user."""
     if include_pii and user.role != "admin":
-        raise forbidden("خروجی شامل اطلاعات شخصی فقط برای مدیر سامانه مجاز است")
+        raise forbidden("انتقال اطلاعات: خروجی شامل اطلاعات شخصی فقط برای مدیر سامانه مجاز است")
     data = LegacyData()
     for e in db.scalars(select(Employee).order_by(Employee.emp_no)):
         data.employees.append(EmployeeRecord(

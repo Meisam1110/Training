@@ -56,7 +56,9 @@ export function createMockFetch(o: MockOptions = {}) {
     return [...items].sort((a, b) => {
       const x = a[key] as unknown, y = b[key] as unknown;
       const c = typeof x === "number" && typeof y === "number" ? x - y : String(x ?? "").localeCompare(String(y ?? ""), "fa");
-      return desc ? -c : c;
+      if (c !== 0) return desc ? -c : c;
+      const ia = (a as { id?: number; emp_no?: string }).id ?? (a as { emp_no?: string }).emp_no ?? 0, ib = (b as { id?: number; emp_no?: string }).id ?? (b as { emp_no?: string }).emp_no ?? 0; // stable tie-break
+      return ia < ib ? -1 : ia > ib ? 1 : 0;
     });
   }
   const matchQ = (q: string | null, ...fields: (string | number | null | undefined)[]) =>
@@ -120,7 +122,7 @@ export function createMockFetch(o: MockOptions = {}) {
     const ex = (k: string, v: string | null | undefined) => (ov[k] ?? v ?? "").toString();
     const r = run;
     const spec: Record<LetterKind, [string, string, string][]> = {
-      course_announcement: [["Farsi_Course_Name", "نام دوره", ex("Farsi_Course_Name", r?.course_name_fa)], ["jStart_Date", "تاریخ شروع", ex("jStart_Date", r ? fmtJalaliLong(r.start_date) : "")], ["deadline_farsi", "مهلت ارسال انگیزه‌نامه", ex("deadline_farsi", r?.deadline ? fmtJalaliLong(r.deadline) : "")], ["Time_Farsi", "ساعت برگزاری", ex("Time_Farsi", r?.time)], ["Day_Farsi", "روزهای برگزاری", ex("Day_Farsi", r?.days)]],
+      course_announcement: [["Farsi_Course_Name", "نام دوره", ex("Farsi_Course_Name", r?.course_name_fa)], ["jStart_Date", "تاریخ شروع", ex("jStart_Date", r ? fmtJalaliLong(r.start_date) : "")], ["deadline_farsi", "مهلت ارسال موتیویشن", ex("deadline_farsi", r?.deadline ? fmtJalaliLong(r.deadline) : "")], ["Time_Farsi", "ساعت برگزاری", ex("Time_Farsi", r?.time)], ["Day_Farsi", "روزهای برگزاری", ex("Day_Farsi", r?.days)]],
       institute_letter: [["To", "گیرنده (مؤسسه)", ex("To", r?.institute)], ["Course_Name", "نام دوره", ex("Course_Name", r?.course_name_fa)], ["Jstart_Date", "تاریخ شروع", ex("Jstart_Date", r ? fmtJalaliLong(r.start_date) : "")], ["Duration", "مدت (ساعت)", ex("Duration", r ? toFa(r.duration_h) : "")]],
       settlement_letter: [["supplier", "تأمین‌کننده", ex("supplier", r?.institute)], ["MTC_no", "شمارهٔ MTC (بخش ب)", ex("MTC_no", r?.section_b)], ["total", "مبلغ کل (ریال)", ex("total", r?.amount ? fmtNum(r.amount) : "")], ["invoice_no", "شمارهٔ فاکتور", ex("invoice_no", "")]],
       level3_request: [["Ftitle", "عنوان (فارسی)", ex("Ftitle", "جناب آقای/سرکار خانم")], ["Summary", "عنوان دوره", ex("Summary", r?.course_name_fa)]],
@@ -182,13 +184,23 @@ export function createMockFetch(o: MockOptions = {}) {
     return pub;
   });
 
-  on("GET", /^\/courses$/, ({ q }) => { need(); return paginate(store.courses.filter((c) => matchQ(q.get("q"), c.name_fa, c.name_en)), q); });
+  on("GET", /^\/courses$/, ({ q }) => { need(); return paginate(sortBy(store.courses.filter((c) => matchQ(q.get("q"), c.name_fa, c.name_en, c.category)), q.get("sort"), "name_fa"), q); });
+  const courseCheck = (b: any, id?: number) => {
+    const errs: Record<string, string> = {};
+    if (!String(b.name_fa ?? "").trim() && !String(b.name_en ?? "").trim()) errs.name_fa = "نام دوره را وارد کنید.";
+    else if (store.courses.some((c) => c.id !== id && c.name_fa === String(b.name_fa ?? "").trim() && c.name_fa)) errs.name_fa = "دوره‌ای با این نام وجود دارد.";
+    if (b.duration_h !== null && b.duration_h !== undefined && !(b.duration_h > 0 && b.duration_h <= 10000)) errs.duration_h = "مدت باید عددی بزرگ‌تر از صفر باشد.";
+    if (Object.keys(errs).length) throw invalid(errs);
+  };
+  on("POST", /^\/courses$/, ({ body }) => { write(); courseCheck(body); const c = { id: store.courses.length + 1, name_fa: body.name_fa.trim(), name_en: body.name_en.trim(), category: body.category ?? "", delivery: "in_person" as const, duration_h: body.duration_h ?? null, active: body.active !== false }; store.courses.push(c); log("course.create", "course", c.id); return c; });
+  on("PATCH", /^\/courses\/(\d+)$/, ({ m, body }) => { write(); const c = store.courses.find((x) => x.id === +m[1]!); if (!c) throw notFound("دوره"); courseCheck(body, c.id); Object.assign(c, { name_fa: body.name_fa.trim(), name_en: body.name_en.trim(), category: body.category ?? "", duration_h: body.duration_h ?? null, active: body.active !== false }); log("course.update", "course", c.id); return c; });
 
   on("GET", /^\/runs$/, ({ q }) => {
     need();
     let items = store.runs.map(withCounts).filter((r) => matchQ(q.get("q"), r.course_name_fa, r.course_name_en, r.institute, r.section_b));
     if (q.get("status")) items = items.filter((r) => r.status === q.get("status"));
     if (q.get("type")) items = items.filter((r) => r.type === q.get("type"));
+    if (q.get("course_id")) items = items.filter((r) => r.course_id === Number(q.get("course_id")));
     return paginate(sortBy(items, q.get("sort"), "-start_date"), q);
   });
   on("POST", /^\/runs$/, ({ body }) => {

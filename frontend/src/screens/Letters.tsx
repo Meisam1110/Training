@@ -82,7 +82,7 @@ export function LettersScreen() {
   return (<>
     <PageHead title="مرکز نامه‌ها" subtitle="نوع نامه و دوره را انتخاب کنید؛ پیش‌نمایش با هر تغییر به‌روز می‌شود." />
     <div className="grid grid--2" style={{ alignItems: "start" }}>
-      <section className="card stack" aria-labelledby="lf-h">
+      <section className="card stack letters-col" aria-labelledby="lf-h">
         <h2 id="lf-h" style={{ fontSize: "var(--fs-4)" }}>مشخصات نامه</h2>
         <SelectField label="نوع نامه" value={kind} onChange={(v) => setKind(v as LetterKind)} options={LETTER_KINDS.map((k) => ({ value: k, label: LETTER_FA[k] }))} />
         <SelectField label="دوره" value={runId} onChange={setRunId} placeholder="انتخاب دوره…" required options={(runs.data?.items ?? []).map((r) => ({ value: String(r.id), label: `${r.course_name_fa} — ${fmtJalali(r.start_date)}` }))} />
@@ -104,15 +104,17 @@ export function LettersScreen() {
           {!canWrite ? <span className="muted">نقش شما فقط مشاهده است.</span> : !runId ? <span className="muted">ابتدا دوره را انتخاب کنید.</span> : needPeople ? <span className="muted">حداقل یک شرکت‌کننده انتخاب کنید.</span> : missingKeys.length > 0 ? <span className="muted">{toFa(missingKeys.length)} فیلد باقی مانده</span> : null}
         </div>
       </section>
-      <section className="card stack" aria-labelledby="pv-h">
-        <div className="row row--between"><h2 id="pv-h" style={{ fontSize: "var(--fs-4)" }}>پیش‌نمایش زنده</h2>{preview.isFetching && <span className="muted">در حال به‌روزرسانی…</span>}</div>
-        {run && <p data-testid="preview-course"><strong>{run.course_name_fa}</strong> · <span className="muted">{LETTER_FA[kind]} · {fmtJalali(run.start_date)}</span></p>}
+      <section className="card stack letters-col" aria-labelledby="pv-h">
+        <div className="row row--between"><h2 id="pv-h" style={{ fontSize: "var(--fs-4)" }}>پیش‌نمایش زنده</h2><span className="muted fetch-hint" data-on={preview.isFetching} aria-hidden={!preview.isFetching}>در حال به‌روزرسانی…</span></div>
+        <p data-testid="preview-course" style={{ minBlockSize: "1.75rem" }}>{run && <><strong>{run.course_name_fa}</strong> · <span className="muted">{LETTER_FA[kind]} · {fmtJalali(run.start_date)}</span></>}</p>
+        <div className="preview-slot">
         {!canWrite ? <Callout tone="info">پیش‌نمایش و ساخت نامه برای نقش «ناظر» در دسترس نیست؛ می‌توانید نامه‌های ساخته‌شده را در فهرست زیر ببینید.</Callout>
           : !runId ? <p className="muted">دوره‌ای انتخاب نشده است.</p>
           : preview.isLoading ? <><Skeleton h={24} /><Skeleton h={120} /></>
           : preview.error ? <Callout tone="danger">{errMsg(preview.error)} <Button size="sm" onClick={() => preview.refetch()}>تلاش دوباره</Button></Callout>
           : preview.data?.html ? <div className="preview" data-testid="letter-preview" dangerouslySetInnerHTML={{ __html: sanitize(preview.data.html) }} />
           : <p className="muted">برای دیدن پیش‌نمایش، فیلدهای ناقص را تکمیل کنید.</p>}
+        </div>
       </section>
     </div>
     <section className="card card--flush" style={{ marginBlockStart: "var(--space-5)" }}>

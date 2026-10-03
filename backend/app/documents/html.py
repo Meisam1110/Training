@@ -102,10 +102,17 @@ def section_html(blocks: Sequence[tuple], values: Mapping[str, str], lists: Mapp
                 body += f"<tr>{tds}</tr>"
             row(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" '
                 f'style="border-collapse:collapse;"><tr>{head}</tr>{body}</table>')
-        elif k == "sign":
-            lines = [_sub(t, values, persian) for t in b[1]]
+        elif k in ("sign", "sign_formal"):
+            lines = [_sub(t, values, persian) for t in b[1] if not t.startswith("[[")]
             lines = [x for x in lines if x.strip()]
-            row("<br>".join(lines), pad="8px 0 0 0")
+            if k == "sign_formal":     # formal letter: signature block on the far (left) side, centred
+                inner = "<br>".join(lines)
+                rows.append(f'<tr><td align="left" dir="{d}" style="{base}padding:8px 0 0 0;">'
+                            f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="left">'
+                            f'<tr><td align="center" style="{base}text-align:center;padding:0 24px;">{inner}</td></tr>'
+                            f"</table></td></tr>")
+            else:
+                row("<br>".join(lines), pad="8px 0 0 0")
         else:
             raise ValueError(k)
     return (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="{d}" '

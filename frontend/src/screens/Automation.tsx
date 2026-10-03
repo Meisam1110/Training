@@ -55,7 +55,7 @@ export function AutomationScreen() {
           <div className="grid grid--form">
             <TextField label="روز پس از پایان تا ارزیابی سطح ۳" numeric value={String(s.level3_after_days)} onChange={(v) => edit({ level3_after_days: Number(v) || 0 })} error={errs.level3_after_days} disabled={!isAdmin} />
             <TextField label="یادآوری چند روز مانده" numeric value={String(s.reminder_days)} onChange={(v) => edit({ reminder_days: Number(v) || 0 })} error={errs.reminder_days} disabled={!isAdmin} />
-            <TextField label="سقف انگیزه‌نامهٔ تأییدنشده" numeric value={String(s.over3_threshold)} onChange={(v) => edit({ over3_threshold: Number(v) || 0 })} error={errs.over3_threshold} disabled={!isAdmin} />
+            <TextField label="سقف موتیویشن تأییدنشده" numeric value={String(s.over3_threshold)} onChange={(v) => edit({ over3_threshold: Number(v) || 0 })} error={errs.over3_threshold} disabled={!isAdmin} />
             <TextField label="پیشوند شمارهٔ نامه" dir="ltr" value={s.letter_number_prefix} onChange={(v) => edit({ letter_number_prefix: v })} error={errs.letter_number_prefix} disabled={!isAdmin} />
             <TextField label="گیرندهٔ نامهٔ تسویه" value={s.settlement_addressee} onChange={(v) => edit({ settlement_addressee: v })} disabled={!isAdmin} />
             <TextField label="امضاکننده" value={s.letter_signer_name} onChange={(v) => edit({ letter_signer_name: v })} disabled={!isAdmin} />

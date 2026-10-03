@@ -39,23 +39,11 @@ def run_counts(db: Session, ids: list[int]) -> dict[int, dict[str, int]]:
     return out
 
 
-def build(db: Session, today: date) -> dict:
-    conf = rt.get_all(db)
-    runs_q = select(CourseRun).options(joinedload(CourseRun.course), joinedload(CourseRun.institute))
-    not_started = list(db.scalars(runs_q.where(CourseRun.status.notin_(("cancelled", "completed")),
-                                               or_(CourseRun.start_date.is_(None), CourseRun.start_date >= today))
-                                  .order_by(CourseRun.start_date).limit(LIMIT)).unique())
-    unpaid = list(db.scalars(runs_q.where(CourseRun.status != "cancelled", CourseRun.start_date <= today,
-                                          CourseRun.amount.is_not(None), CourseRun.payment_process == "",
-                                          CourseRun.pr_process_start_date.is_(None))
-                             .order_by(CourseRun.start_date).limit(LIMIT)).unique())
-    cnt = run_counts(db, [r.id for r in not_started + unpaid])
-    ns = [ser.run(r, today, cnt.get(r.id)) for r in not_started]
-    pn = [{**ser.run(r, today, cnt.get(r.id)), "days_since_start": (today - r.start_date).days} for r in unpaid]
-
+def over3_list(db: Session, conf: dict, limit: int = LIMIT) -> list[dict]:
+    """Per TICKET (legacy IDP!R): offered in >= over3_threshold runs without a "Yes"."""
     counts = rules.non_yes_counts(db)
     over = {e: n for e, n in counts.items() if n >= int(conf["over3_threshold"])}
-    o3 = []
+    o3: list[dict] = []
     if over:
         ens = {e.id: e for e in db.scalars(select(Enrollment).options(joinedload(Enrollment.employee))
                                            .where(Enrollment.id.in_(list(over))))}
@@ -64,12 +52,17 @@ def build(db: Session, today: date) -> dict:
                                    .where(EnrollmentOffer.enrollment_id.in_(list(over)), EnrollmentOffer.motivation != "Yes")
                                    .order_by(EnrollmentOffer.id)):
             runs_of.setdefault(eid, []).append(rid)
-        for eid, n in sorted(over.items(), key=lambda kv: (-kv[1], kv[0]))[:LIMIT]:
+        for eid, n in sorted(over.items(), key=lambda kv: (-kv[1], kv[0]))[:limit]:
             e = ens[eid]
             o3.append({"enrollment_id": e.id, "ticket": e.ticket, "emp_no": e.employee.emp_no,
                        "employee_name": f"{e.employee.first_name_en} {e.employee.last_name_en}".strip(),
                        "division": e.employee.division, "course_name": e.course_name, "non_yes_count": n,
                        "run_ids": runs_of.get(eid, [])})
+    return o3
+
+
+def level3_list(db: Session, today: date, conf: dict, limit: int = LIMIT) -> list[dict]:
+    """Level-3 due, from Dev-B's compute_due (the single implementation)."""
     l3 = []
     facts = automation.build_facts(db, level3_only=True)
     by_id = {f.enrollment_id: f for f in facts}
@@ -77,13 +70,33 @@ def build(db: Session, today: date) -> dict:
                gateway.compute_due(facts, today, level3_after_days=int(conf["level3_after_days"])) if i.kind == "level3_due"}
     if due_ids:
         for e in db.scalars(select(Enrollment).options(joinedload(Enrollment.employee)).where(Enrollment.id.in_(list(due_ids)))
-                            .order_by(Enrollment.end_date)).unique():
+                            .order_by(Enrollment.end_date, Enrollment.id)).unique():
             end = due_ids[e.id].end_date
             l3.append({"enrollment_id": e.id, "ticket": e.ticket, "emp_no": e.employee.emp_no,
                        "employee_name": f"{e.employee.first_name_en} {e.employee.last_name_en}".strip(),
                        "course_name": e.course_name, "end_date": end.isoformat(), "days_since_end": (today - end).days})
-            if len(l3) >= LIMIT:
+            if len(l3) >= limit:
                 break
+
+    return l3
+
+
+def build(db: Session, today: date) -> dict:
+    conf = rt.get_all(db)
+    runs_q = select(CourseRun).options(joinedload(CourseRun.course), joinedload(CourseRun.institute))
+    not_started = list(db.scalars(runs_q.where(CourseRun.status.notin_(("cancelled", "completed")),
+                                               or_(CourseRun.start_date.is_(None), CourseRun.start_date >= today))
+                                  .order_by(CourseRun.start_date, CourseRun.id).limit(LIMIT)).unique())
+    unpaid = list(db.scalars(runs_q.where(CourseRun.status != "cancelled", CourseRun.start_date <= today,
+                                          CourseRun.amount.is_not(None), CourseRun.payment_process == "",
+                                          CourseRun.pr_process_start_date.is_(None))
+                             .order_by(CourseRun.start_date, CourseRun.id).limit(LIMIT)).unique())
+    cnt = run_counts(db, [r.id for r in not_started + unpaid])
+    ns = [ser.run(r, today, cnt.get(r.id)) for r in not_started]
+    pn = [{**ser.run(r, today, cnt.get(r.id)), "days_since_start": (today - r.start_date).days} for r in unpaid]
+
+    o3 = over3_list(db, conf)
+    l3 = level3_list(db, today, conf)
 
     def n(model) -> int:
         return db.scalar(select(func.count()).select_from(model)) or 0

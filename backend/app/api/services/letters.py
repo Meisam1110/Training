@@ -12,6 +12,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session, joinedload, sessionmaker
 
 from app.api.errors import not_found, upstream, validation
+from app.api.services import field_catalog as fc
 from app.api.services import gateway, numbering, rules
 from app.api.services import settings_store as rt
 from app.audit import record as audit
@@ -295,8 +296,15 @@ def preview(db: Session, settings: Settings, body: LetterIn, today: date) -> dic
     f = gateway.get_factory()
     plans, skipped = build_plans(db, settings, f.build_calendar(), body, today)
     r = render(get_renderer(settings), body.kind, plans[0].fields, body.lang)
-    return {"kind": body.kind, "subject": r.subject, "html": r.html_body, "filename": r.filename, "count": len(plans),
-            "skipped": skipped, "missing_fields": []}     # missing fields are a 422 naming them (see missing_fields_error)
+    out = {"kind": body.kind, "subject": r.subject, "html": r.html_body, "filename": r.filename, "count": len(plans),
+           "skipped": skipped, "missing_fields": [], "unknown_fields": []}      # missing renderer fields are a 422 naming them
+    if body.template_id:                      # the e-mail text comes from the chosen template; the docx is still the renderer's
+        from app.api.services import templates as tsvc
+        t = tsvc.load_for_use(db, body.template_id, body.kind)
+        res = tsvc.render(t.subject, t.body_html, {**fc.with_aliases(plans[0].fields), "Letter_No": PLACEHOLDER_NO})
+        out.update(subject=res["subject"] or r.subject, html=res["html"], missing_fields=res["missing_fields"],
+                   unknown_fields=res["unknown_fields"], template_id=t.id)
+    return out
 
 
 def mark_level3(db: Session, kind: str, enrollment_ids: list[int]) -> None:
@@ -320,6 +328,12 @@ def create(db: Session, sf: sessionmaker[Session], settings: Settings, user: Use
     renderer = get_renderer(settings)
     for p in plans:   # fail before consuming numbers
         check_required(renderer, body.kind, p.fields, body.lang)
+    tpl = None
+    if body.template_id:
+        from app.api.services import templates as tsvc
+        tpl = tsvc.load_for_use(db, body.template_id, body.kind)
+        for p in plans:       # fail before consuming numbers: unknown / blank fields are a 422, never a half-empty message
+            tsvc.render_strict(tpl, {**fc.with_aliases(p.fields), "Letter_No": PLACEHOLDER_NO})
     conf = rt.get_all(db)
     storage = settings.storage_path / "letters"
     storage.mkdir(parents=True, exist_ok=True)
@@ -336,8 +350,12 @@ def create(db: Session, sf: sessionmaker[Session], settings: Settings, user: Use
                 fields["Letter_No"] = number
             r = render(renderer, body.kind, fields, body.lang)
             fname = safe_filename(r.filename, f"{body.kind}-{seq}.docx")
+            subject, html_body = r.subject, r.html_body
+            if tpl:
+                res = tsvc.render_strict(tpl, {**fc.with_aliases(fields), "Letter_No": number})
+                subject, html_body = res["subject"] or r.subject, res["html"]
             letter = Letter(kind=body.kind, run_id=body.run_id, seq=seq, number=number, lang=body.lang, filename=fname,
-                            file_path="", subject=r.subject[:500], html_body=r.html_body, enrollment_ids=p.enrollment_ids,
+                            file_path="", subject=subject[:500], html_body=html_body, enrollment_ids=p.enrollment_ids,
                             created_by=user.id if user else None)      # html_body is stored encrypted (EncryptedTextCompat)
             db.add(letter)
             db.flush()
@@ -349,7 +367,7 @@ def create(db: Session, sf: sessionmaker[Session], settings: Settings, user: Use
                 mark_level3(db, body.kind, p.enrollment_ids)
             audit(db, "letter.create", user=user, actor="" if user else "scheduler", entity="letter", entity_id=letter.id, ip=ip,
                   detail={"kind": body.kind, "number": number, "run_id": body.run_id, "enrollments": len(p.enrollment_ids),
-                          "pii_included": body.kind in PII_KINDS, "skipped": len(skipped)})
+                          "pii_included": body.kind in PII_KINDS, "skipped": len(skipped), "template_id": body.template_id})
             out.append(letter)
         db.commit()
     except Exception:

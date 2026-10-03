@@ -5,6 +5,7 @@ from typing import Any, Callable, Mapping
 
 from fastapi import Query
 from sqlalchemy import Select, func, select
+from sqlalchemy import inspect as sa_inspect
 from sqlalchemy.orm import Session
 
 from .errors import validation
@@ -20,6 +21,14 @@ class PageParams:
         self.page, self.page_size, self.q, self.sort = page, page_size, q.strip(), sort.strip()
 
 
+def _primary_key(stmt: Select):
+    try:
+        entity = stmt.column_descriptions[0]["entity"]
+        return sa_inspect(entity).primary_key[0]
+    except Exception:   # noqa: BLE001 - not an ORM entity select: nothing to add
+        return None
+
+
 def apply_sort(stmt: Select, sort: str, allowed: Mapping[str, Any], default: str) -> Select:
     keys = [k for k in (sort or default).split(",") if k]
     cols = []
@@ -30,6 +39,10 @@ def apply_sort(stmt: Select, sort: str, allowed: Mapping[str, Any], default: str
             raise validation("فیلد مرتب‌سازی نامعتبر", sort=f"مقادیر مجاز: {', '.join(sorted(allowed))}")
         c = allowed[name]
         cols.append(c.desc() if desc else c.asc())
+    # every list has a TOTAL order: ties on the requested column(s) fall back to the primary key, so rows never reshuffle between polls
+    pk = _primary_key(stmt)
+    if pk is not None:
+        cols.append(pk.asc())
     return stmt.order_by(*cols)
 
 

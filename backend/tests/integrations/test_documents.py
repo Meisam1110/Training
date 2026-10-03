@@ -142,10 +142,10 @@ def test_language_selection():
     both = text_of(R.render("course_announcement", SAMPLES["course_announcement"]).docx_bytes)
     fa = R.render("course_announcement", SAMPLES["course_announcement"], "fa")
     en = R.render("course_announcement", SAMPLES["course_announcement"], "en")
-    assert "Training Course Registration" in both and "ثبت نام در دوره آموزشی" in both
+    assert "Training Course Registration" in both and "ثبت‌نام در دوره آموزشی" in both
     tf, te = text_of(fa.docx_bytes), text_of(en.docx_bytes)
-    assert "ثبت نام" in tf and "Training Course Registration" not in tf
-    assert "Training Course Registration" in te and "ثبت نام" not in te
+    assert "ثبت‌نام" in tf and "Training Course Registration" not in tf
+    assert "Training Course Registration" in te and "ثبت‌نام" not in te
     assert fa.filename.endswith("_fa.docx") and en.subject.startswith("Training Course")
     assert "dir=\"ltr\"" not in fa.html_body.split("<body")[1].split("<table")[0]
     f = {k: v for k, v in SAMPLES["course_announcement"].items() if k in

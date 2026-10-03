@@ -67,7 +67,7 @@ export function ImportExportScreen() {
   const [ask, setAsk] = useState(false); const [busy, setBusy] = useState(false);
   const doExport = async () => { setBusy(true); try { const { blob, filename } = await api.exportLegacy(); saveBlob(blob, filename); toast.push({ message: "فایل برون‌بری آماده شد." }); } catch (e) { toast.push({ kind: "error", message: errMsg(e) }); } finally { setBusy(false); setAsk(false); } };
   return (<>
-    <PageHead title="درون‌ریزی و برون‌بری" subtitle="ورود خروجی iCare یا کارنامهٔ قدیمی، و خروجی با ستون‌بندی قدیمی." actions={canWrite && <Button icon="download" onClick={() => setAsk(true)}>برون‌بری اکسل قدیمی…</Button>} />
+    <PageHead title="انتقال اطلاعات" subtitle="ورود خروجی iCare یا کارنامهٔ قدیمی، و خروجی با ستون‌بندی قدیمی." actions={canWrite && <Button icon="download" onClick={() => setAsk(true)}>برون‌بری اکسل قدیمی…</Button>} />
     <div className="grid grid--2" style={{ alignItems: "start" }}>
       <Importer kind="idp" title="خروجی iCare (IDP)" hint="درخواست‌های دوره از iCare. ردیف عنوان باید ردیف ۵ باشد." />
       <Importer kind="legacy" title="کارنامهٔ قدیمی (Record / CHistory / IFS)" hint="ورود یک‌بارهٔ اطلاعات گذشته. تکرار ورود، رکورد تکراری نمی‌سازد." />

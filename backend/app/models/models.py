@@ -27,10 +27,53 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(64), unique=True)
     display_name: Mapped[str] = mapped_column(String(128), default="")
     password_hash: Mapped[str] = mapped_column(String(255))
+    email: Mapped[str] = mapped_column(String(200), default="")
     role: Mapped[str] = mapped_column(String(16), default="viewer")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+
+class UserPrefs(Base):
+    """Per-user UI state: dashboard layout (server-validated) and small free-form preferences (size-capped)."""
+    __tablename__ = "user_prefs"
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    layout: Mapped[dict[str, Any] | None] = mapped_column(JSON)
+    layout_version: Mapped[int] = mapped_column(Integer, default=0)
+    preferences: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+
+
+class MessageTemplate(Base):
+    """User-editable e-mail / letter body. ``body_html`` is sanitised rich text (allow-list) holding field chips
+    (<span data-field="key">) that are replaced by escaped values at render time."""
+    __tablename__ = "message_templates"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    kind: Mapped[str] = mapped_column(String(32), index=True)
+    name: Mapped[str] = mapped_column(String(200))
+    lang: Mapped[str] = mapped_column(String(8), default="both")
+    subject: Mapped[str] = mapped_column(String(300), default="")
+    body_html: Mapped[str] = mapped_column(Text, default="")
+    is_system: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_default: Mapped[bool] = mapped_column(Boolean, default=False)
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+
+
+class MessageTemplateVersion(Base):
+    __tablename__ = "message_template_versions"
+    __table_args__ = (UniqueConstraint("template_id", "version", name="uq_template_version"),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    template_id: Mapped[int] = mapped_column(ForeignKey("message_templates.id", ondelete="CASCADE"), index=True)
+    version: Mapped[int] = mapped_column(Integer)
+    name: Mapped[str] = mapped_column(String(200))
+    lang: Mapped[str] = mapped_column(String(8), default="both")
+    subject: Mapped[str] = mapped_column(String(300), default="")
+    body_html: Mapped[str] = mapped_column(Text, default="")
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
 class UserSession(Base):

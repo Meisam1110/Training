@@ -43,14 +43,14 @@ export const DIVISIONS = ["منابع انسانی", "فناوری اطلاعا�
 export const INSTITUTES = ["مؤسسه توسعه فردا", "آکادمی آریا", "مرکز آموزش پارسیان", "اسکیل‌لب"];
 
 const COURSES: [string, string, string, "online" | "in_person"][] = [
-  ["مدیریت زمان", "Time Management", "soft skill", "online"],
-  ["رهبری تیم‌های چابک", "Agile Team Leadership", "soft skill", "in_person"],
-  ["مذاکرهٔ مؤثر", "Effective Negotiation", "soft skill", "in_person"],
-  ["تحلیل داده با Power BI", "Data Analysis with Power BI", "technical", "online"],
-  ["مدیریت پروژه (PMP)", "Project Management (PMP)", "technical", "in_person"],
-  ["ارتباط مؤثر", "Effective Communication", "soft skill", "online"],
-  ["امنیت سایبری مقدماتی", "Cyber Security Basics", "technical", "online"],
-  ["تفکر طراحی", "Design Thinking", "soft skill", "in_person"],
+  ["مدیریت زمان", "Time Management", "مهارت نرم", "online"],
+  ["رهبری تیم‌های چابک", "Agile Team Leadership", "مهارت نرم", "in_person"],
+  ["مذاکرهٔ مؤثر", "Effective Negotiation", "مهارت نرم", "in_person"],
+  ["تحلیل داده با Power BI", "Data Analysis with Power BI", "فنی", "online"],
+  ["مدیریت پروژه (PMP)", "Project Management (PMP)", "فنی", "in_person"],
+  ["ارتباط مؤثر", "Effective Communication", "مهارت نرم", "online"],
+  ["امنیت سایبری مقدماتی", "Cyber Security Basics", "فنی", "online"],
+  ["تفکر طراحی", "Design Thinking", "مهارت نرم", "in_person"],
 ];
 
 const DAYS = ["شنبه و دوشنبه", "یکشنبه و سه‌شنبه", "چهارشنبه", "شنبه تا چهارشنبه", "پنجشنبه"];
@@ -83,7 +83,7 @@ export function makeStore(seed = 1405, today = todayISO()): Store {
     });
   }
 
-  const courses: Course[] = COURSES.map(([fa, en, category, delivery], i) => ({ id: i + 1, name_fa: fa, name_en: en, category, delivery }));
+  const courses: Course[] = COURSES.map(([fa, en, category, delivery], i) => ({ id: i + 1, name_fa: fa, name_en: en, category, delivery, duration_h: [8, 16, 12, 24, 40, 8, 16, 12][i] ?? 12, active: true }));
 
   // [course index, start offset, length days, status, amount (million Rial), payment started]
   const plan: [number, number, number, RunStatus, number | null, boolean][] = [

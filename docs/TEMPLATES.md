@@ -39,6 +39,14 @@ Template: `templates/course_announcement.docx`. Subject/filename derived automat
 | `Day` | yes | en | Course days (English) | Every Sunday & Monday |  |
 | `link` | yes | all | Course content link (URL) | https://lms.example.test/course/1 |  |
 | `guide_link` | no | all | Registration guide link (URL); defaults to `link` | defaults to `link` |  |
+| `signer_name_fa` | no | all | نام امضاکننده | default `` |  |
+| `signer_title_fa` | no | all | سمت امضاکننده | default `` |  |
+| `unit_fa` | no | all | واحد فرستنده | default `تیم تعلق خاطر کارکنان` |  |
+| `department_fa` | no | all | معاونت/حوزه | default `منابع انسانی` |  |
+| `signer_email` | no | all | ایمیل امضاکننده | default `` |  |
+| `signer_phone` | no | all | تلفن امضاکننده | default `` |  |
+
+Accepted alternative spellings (normalised before validation, either works): `signer_name` <-> `signer_name_fa`, `signer_title` <-> `signer_title_fa`.
 
 ### `institute_letter` - Letter to the training institute (fa)
 
@@ -60,10 +68,12 @@ Template: `templates/institute_letter.docx`. Subject/filename derived automatica
 | `company_national_id` | yes | all | Company national ID | 00000000000 |  |
 | `company_postal_code` | yes | all | Company postal code | 0000000000 |  |
 | `company_address` | yes | all | Company head-office address | تهران، خیابان نمونه، پلاک ۱ |  |
-| `signer_name` | no | all | Signer name | default `Talent Development Team` |  |
-| `signer_title` | no | all | Signer title | default `Human Resources` |  |
-| `signer_email` | no | all | Signer e-mail | default `` |  |
-| `signer_phone` | no | all | Signer phone | default `` |  |
+| `signer_name_fa` | no | all | نام امضاکننده | default `` |  |
+| `signer_title_fa` | no | all | سمت امضاکننده | default `` |  |
+| `unit_fa` | no | all | واحد فرستنده | default `تیم توسعه استعدادها` |  |
+| `department_fa` | no | all | معاونت/حوزه | default `منابع انسانی` |  |
+| `signer_email` | no | all | ایمیل امضاکننده | default `` |  |
+| `signer_phone` | no | all | تلفن امضاکننده | default `` |  |
 | `participants[]` | yes (min 1) | all | Participants table | list of objects | |
 
 Items of `participants`:
@@ -74,6 +84,8 @@ Items of `participants`:
 | `national_id` | yes | National ID | 0000000000 |
 | `phone` | yes | Phone | 09120000000 |
 | `email` | yes | E-mail | ali@example.test |
+
+Accepted alternative spellings (normalised before validation, either works): `signer_name` <-> `signer_name_fa`, `signer_title` <-> `signer_title_fa`.
 
 ### `settlement_letter` - Invoice settlement letter (en)
 
@@ -122,6 +134,14 @@ Template: `templates/level3_request.docx`. Subject/filename derived automaticall
 | `Reporter__Name` | yes | en | Employee name (English) | Ali Sample |  |
 | `Summary` | yes | all | Course name | PMBOK V6 |  |
 | `link` | yes | all | Ticket URL | https://icare.example.test/browse/LMS-000001 |  |
+| `signer_name_fa` | no | all | نام امضاکننده | default `` |  |
+| `signer_title_fa` | no | all | سمت امضاکننده | default `` |  |
+| `unit_fa` | no | all | واحد فرستنده | default `تیم توسعه استعدادها` |  |
+| `department_fa` | no | all | معاونت/حوزه | default `منابع انسانی` |  |
+| `signer_email` | no | all | ایمیل امضاکننده | default `` |  |
+| `signer_phone` | no | all | تلفن امضاکننده | default `` |  |
+
+Accepted alternative spellings (normalised before validation, either works): `signer_name` <-> `signer_name_fa`, `signer_title` <-> `signer_title_fa`.
 
 ### `level3_manager_check` - Level 3 manager confirmation request (fa + en)
 
@@ -139,8 +159,14 @@ Template: `templates/level3_manager_check.docx`. Subject/filename derived automa
 | `Reporter__Name` | yes | en | Employee name (English) | Ali Sample |  |
 | `Summary` | yes | all | Course name | Paging Optimization |  |
 | `link` | yes | all | Ticket URL | https://icare.example.test/browse/LMS-000002 |  |
+| `signer_name_fa` | no | all | نام امضاکننده | default `` |  |
+| `signer_title_fa` | no | all | سمت امضاکننده | default `` |  |
+| `unit_fa` | no | all | واحد فرستنده | default `تیم توسعه استعدادها` |  |
+| `department_fa` | no | all | معاونت/حوزه | default `منابع انسانی` |  |
+| `signer_email` | no | all | ایمیل امضاکننده | default `` |  |
+| `signer_phone` | no | all | تلفن امضاکننده | default `` |  |
 
-Accepted alternative spellings (normalised before validation, either works): `Reporter_F_title` <-> `Reporter_F_tilte`.
+Accepted alternative spellings (normalised before validation, either works): `Reporter_F_title` <-> `Reporter_F_tilte`, `signer_name` <-> `signer_name_fa`, `signer_title` <-> `signer_title_fa`.
 
 ### `line_manager_approval` - Line-manager approval batch (en)
 
@@ -184,3 +210,18 @@ Found and changed:
 
 Checked and kept (no personal data): `howto_level3_form.png` (form with generic "Test" text), `howto_manager_agree.png` (Yes/No form with a Persian instruction callout), `banner_talent_fa/en.png` (artwork + team name), `logo_irancell.png` (company logo), `letterhead_top/bottom.jpg` (company letterhead: corporate name, public head-office address, switchboard/fax numbers and web address - organisational, not personal).
 Result: no personal names, faces, e-mails, employee/ticket/invoice/letter numbers or personal phones in templates, assets or document metadata. Limits: this is a visual + pattern audit by the author, not an independent review; the company letterhead intentionally keeps the corporate contact line.
+
+
+## Persian signatures, terminology and formal layout (owner request, phase 1)
+- Every **Persian** letter/e-mail now ends with a Persian block: closing («با سپاس» for announcements, «با احترام» for the formal/evaluation letters), optional signature image, `signer_name_fa`, `signer_title_fa`, `unit_fa` (default «تیم توسعه استعدادها»; announcements «تیم تعلق خاطر کارکنان»), `department_fa` (default «منابع انسانی»), optional `signer_phone` / `signer_email`. Empty optional lines disappear. The old `signer_name` / `signer_title` are accepted as aliases of the `_fa` fields. The **English** section of the bilingual kinds keeps its English sign-off. `settlement_letter` and `line_manager_approval` are English e-mails by design (legacy) and keep English signer fields (`signer_name`, `signer_title`, `sender_name`); making them Persian is a product decision (they would need Persian variants of their wording).
+- `signature_image` (optional field): PNG/JPEG bytes, base64 or data-URI, at most 1 MB, placed above the signer name in the .docx (3.5 cm wide); omitted from the e-mail HTML (no embedded images, Outlook-safe). Invalid images raise `ValueError`.
+- The institute letter is an official letter (رسمی): «شماره / تاریخ / پیوست» block top right under the letterhead, and the closing + signature block in a borderless table on the left side of the page (signature on the far side). Signature blocks never split across a page (keep-with-next).
+- Terminology: «موتیویشن» is the only term used for the Motivation Form (the old Persian coinage is banned) in all wording, e.g. «فرم موتیویشن (Motivation Form)», «راهنمای ثبت موتیویشن»; «ثبت‌نام», «مأموریت ساعتی درون‌شهری», «تأیید» spelled consistently. A test (`test_terminology_no_legacy_term_anywhere`) scans code, docs and the .docx templates for the old term, including all ZWNJ/space variants.
+
+## Field catalog and custom (user-created) templates
+`from app.documents import field_catalog` (also `app.documents.specs.field_catalog`): list of dicts `{key, label_fa, source, type, sample_fa, required_for_kinds}` plus `legacy` (the names the six kinds use), `used_in_kinds`, `optional`. `source` is course|run|employee|manager|institute|company|links|system; `type` is text|date_jalali|date|number|money|url|list. Samples are synthetic. `key` is the friendly token for the editor (`{{course_name_fa}}`); a legacy name (`{{Farsi_Course_Name}}`) is accepted too, and the caller's `fields` may use either.
+
+`DocxLetterRenderer.render_custom(subject, body_html, fields, lang="fa", letterhead=True)` renders editor HTML (`{{key}}` tokens or `<span data-field="key">`) into the same `RenderedLetter` (`kind="custom"`): e-mail HTML (RTL, inline styles) plus a .docx built from the sanitised HTML on the Irancell letterhead. Tokens: `{{key}}` required, `{{key?}}` optional (empty when missing), `{{key|fa}}` Persian digits, `{{key|ltr}}`, `{{key|iso}}`. Unknown token -> `UnknownFieldError(.fields)`; known but empty -> `MissingFieldError(.fields)` (both `ValueError`, structured); oversize/too deep/too many tokens -> `TemplateSyntaxError`. Raw inputs (`start_date`, `deadline_date`, `letter_date`, `duration_hours`, `gender`) derive the text fields; date/number/money fields get Persian digits automatically when the digit option is on. A paragraph consisting only of a list-valued token (`{{participants}}`, `{{attendees}}`, `{{employees}}`) becomes a table with Persian column headers. Security: whitelist parser (p br b strong i em u ul ol li a table thead tbody tr td th h2 h3 span div); script/style/iframe/object/svg/form dropped with their content; no event handlers or styles; links only http/https/mailto (after substitution, so `{{link}}` = `javascript:` is dropped); single-pass substitution (values never rescanned, always HTML-escaped, plain text in the docx); subject forced to one line; body limit 500,000 characters, depth 40, 2,000 tokens, 5,000 table cells. Consecutive empty lines left by empty optional fields are collapsed.
+
+## Default system templates
+`from app.documents import DEFAULT_TEMPLATES` / `app.documents.default_templates.default_templates()` (fresh copies with `fields_used`): `announcement`, `reminder`, `level3`, `manager_check`, `institute`, `settlement`, `generic`; each `{key, kind, lang, title_fa, description_fa, subject, body_html}` in polished Persian using catalog tokens and the Persian signature. A test renders all seven with the catalog samples.

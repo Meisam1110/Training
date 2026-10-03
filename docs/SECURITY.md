@@ -54,6 +54,12 @@ reachable directly by untrusted hosts, none of them can influence the address.
 Users and the bootstrap admin: >= 12 characters, >= 8 distinct, at least 3 of {lower, upper, digit, symbol}, no username, no common word (password, admin, welcome,
 qwerty ...), no 6-long run (123456, abcdef), no 4 repeated characters. `Password123456` and `12345678901234` are rejected. Production refuses to start with a weak bootstrap password.
 
+## User-written templates
+Rich text is sanitised on the server at save AND at render: allow-list of tags (b i u strong em ul ol li p br a table thead tbody tr th td h2 h3 span) and attributes
+(`dir`, `colspan/rowspan`, chip `data-field`, link `href` limited to http/https/mailto/tel); scripts, styles, iframes, svg, forms, event handlers, `style`, `javascript:`/`data:`
+URLs and comments are removed. Field values are HTML-escaped and inserted in ONE pass over the template text, so a value can neither inject markup nor be expanded as a field
+(`{{x}}` inside a name stays literal). Subjects are plain text with CR/LF stripped. System templates are read-only; every change is versioned and audited; a test e-mail goes only to the caller's own address.
+
 ## Manual edits vs imports
 A person's edit wins: attendance, registration, calendar, payment, comment and motivation set through the API are recorded per enrollment (`manual_fields`) and are never
 overwritten by an IDP/legacy import or an Excel sync. A blank incoming value never erases a stored one. `PATCH /enrollments/{id}` with `release_fields` hands a column back to the importer.

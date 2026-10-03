@@ -49,7 +49,7 @@ def num(x: Any) -> float | None:
 
 
 def user(u: User) -> dict:
-    return {"id": u.id, "username": u.username, "display_name": u.display_name, "role": u.role,
+    return {"id": u.id, "username": u.username, "display_name": u.display_name, "email": u.email or "", "role": u.role,
             "is_active": u.is_active, "created_at": iso(u.created_at), "last_login_at": iso(u.last_login_at)}
 
 
@@ -166,3 +166,15 @@ def sync_run(s: SyncRun) -> dict:
 def audit(a: AuditLog) -> dict:
     return {"id": a.id, "ts": iso(a.ts), "actor": a.actor, "actor_id": a.actor_id, "action": a.action,
             "entity": a.entity, "entity_id": a.entity_id, "detail": a.detail, "ip": a.ip}
+
+
+def template(t, detail: bool = False) -> dict:
+    d = {"id": t.id, "kind": t.kind, "name": t.name, "lang": t.lang, "subject": t.subject, "is_system": t.is_system,
+         "is_default": t.is_default, "version": t.version, "created_by": t.created_by, "created_at": iso(t.created_at),
+         "updated_at": iso(t.updated_at)}
+    if detail:
+        from app.api.services import rich_text
+        d["body_html"] = t.body_html
+        keys = rich_text.referenced_fields(t.body_html)
+        d["fields_used"] = keys + [k for k in dict.fromkeys(rich_text.TOKEN_RE.findall(t.subject)) if k not in keys]
+    return d

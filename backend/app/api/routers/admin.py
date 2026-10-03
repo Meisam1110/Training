@@ -35,7 +35,8 @@ def create_user(body: UserCreate, request: Request, db: Session = Depends(get_db
     why = weak_password(body.password, body.username)
     if why:
         raise validation(why, password=why)
-    u = User(username=body.username, display_name=body.display_name, role=body.role, password_hash=hash_password(body.password))
+    u = User(username=body.username, display_name=body.display_name, email=body.email, role=body.role,
+             password_hash=hash_password(body.password))
     db.add(u)
     try:
         db.flush()
